@@ -1,0 +1,125 @@
+[
+  {
+    "id": 1,
+    "name": "Alice",
+    "following": [
+      {"id": 2, "name": "Bob"},
+      {"id": 3, "name": "Charlie"}
+    ],
+    "followedBy": [
+      {"id": 4, "name": "David"},
+      {"id": 5, "name": "Eve"}
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Bob",
+    "following": [
+      {"id": 1, "name": "Alice"},
+      {"id": 6, "name": "Frank"}
+    ],
+    "followedBy": [
+      {"id": 1, "name": "Alice"},
+      {"id": 7, "name": "Grace"}
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Charlie",
+    "following": [
+      {"id": 8, "name": "Hank"},
+      {"id": 5, "name": "Eve"}
+    ],
+    "followedBy": [
+      {"id": 1, "name": "Alice"},
+      {"id": 6, "name": "Frank"}
+    ]
+  },
+  {
+    "id": 4,
+    "name": "David",
+    "following": [
+      {"id": 2, "name": "Bob"},
+      {"id": 9, "name": "Irene"}
+    ],
+    "followedBy": [
+      {"id": 1, "name": "Alice"},
+      {"id": 3, "name": "Charlie"}
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Eve",
+    "following": [
+      {"id": 10, "name": "Jack"},
+      {"id": 3, "name": "Charlie"}
+    ],
+    "followedBy": [
+      {"id": 2, "name": "Bob"},
+      {"id": 4, "name": "David"}
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Frank",
+    "following": [
+      {"id": 5, "name": "Eve"},
+      {"id": 1, "name": "Alice"}
+    ],
+    "followedBy": [
+      {"id": 2, "name": "Bob"},
+      {"id": 3, "name": "Charlie"}
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Grace",
+    "following": [
+      {"id": 4, "name": "David"},
+      {"id": 2, "name": "Bob"}
+    ],
+    "followedBy": [
+      {"id": 1, "name": "Alice"},
+      {"id": 8, "name": "Hank"}
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Hank",
+    "following": [
+      {"id": 6, "name": "Frank","following": [
+        {"id": 5, "name": "Eve"},
+        {"id": 1, "name": "Alice"}
+      ]},
+      {"id": 10, "name": "Jack"}
+    ],
+    "followedBy": [
+      {"id": 3, "name": "Charlie"},
+      {"id": 7, "name": "Grace"}
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Irene",
+    "following": [
+      {"id": 7, "name": "Grace"},
+      {"id": 1, "name": "Alice"}
+    ],
+    "followedBy": [
+      {"id": 4, "name": "David"},
+      {"id": 8, "name": "Hank"}
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Jack",
+    "following": [
+      {"id": 9, "name": "Irene"},
+      {"id": 2, "name": "Bob"}
+    ],
+    "followedBy": [
+      {"id": 5, "name": "Eve"},
+      {"id": 6, "name": "Frank"}
+    ]
+  }
+]
