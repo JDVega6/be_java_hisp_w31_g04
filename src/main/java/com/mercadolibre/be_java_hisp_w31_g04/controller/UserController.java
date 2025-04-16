@@ -1,5 +1,6 @@
 package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserFollowedDto;
 import com.mercadolibre.be_java_hisp_w31_g04.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class UserController {
     @GetMapping("/{userId}/followed/list")
     public ResponseEntity<UserFollowedDto> getUserFollowed(@PathVariable Integer userId){
         return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/followers/count")
+    public ResponseEntity<FollowersCountDto> getUserFollowersCount(@PathVariable int userId){
+        return new ResponseEntity<>(userServiceImpl.getUserFollowersCount(userId), HttpStatus.OK);
     }
 
 }
