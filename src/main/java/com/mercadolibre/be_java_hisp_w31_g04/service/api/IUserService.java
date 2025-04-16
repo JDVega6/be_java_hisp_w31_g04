@@ -4,7 +4,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserFollowedDto;
 
 public interface IUserService {
-    UserFollowedDto getUserFollowed(Integer userId);
+    UserFollowedDto getUserFollowed(Integer userId,String order);
 
     FollowersCountDto getUserFollowersCount(Integer userId);
 }
