@@ -2,124 +2,61 @@
   {
     "id": 1,
     "name": "Alice",
-    "following": [
-      {"id": 2, "name": "Bob"},
-      {"id": 3, "name": "Charlie"}
-    ],
-    "followedBy": [
-      {"id": 4, "name": "David"},
-      {"id": 5, "name": "Eve"}
-    ]
+    "following": [2, 3],
+    "followedBy": [4, 5]
   },
   {
     "id": 2,
     "name": "Bob",
-    "following": [
-      {"id": 1, "name": "Alice"},
-      {"id": 6, "name": "Frank"}
-    ],
-    "followedBy": [
-      {"id": 1, "name": "Alice"},
-      {"id": 7, "name": "Grace"}
-    ]
+    "following": [1, 6],
+    "followedBy": [1, 7]
   },
   {
     "id": 3,
     "name": "Charlie",
-    "following": [
-      {"id": 8, "name": "Hank"},
-      {"id": 5, "name": "Eve"}
-    ],
-    "followedBy": [
-      {"id": 1, "name": "Alice"},
-      {"id": 6, "name": "Frank"}
-    ]
+    "following": [8, 5],
+    "followedBy": [1, 6]
   },
   {
     "id": 4,
     "name": "David",
-    "following": [
-      {"id": 2, "name": "Bob"},
-      {"id": 9, "name": "Irene"}
-    ],
-    "followedBy": [
-      {"id": 1, "name": "Alice"},
-      {"id": 3, "name": "Charlie"}
-    ]
+    "following": [2, 9],
+    "followedBy": [1, 3]
   },
   {
     "id": 5,
     "name": "Eve",
-    "following": [
-      {"id": 10, "name": "Jack"},
-      {"id": 3, "name": "Charlie"}
-    ],
-    "followedBy": [
-      {"id": 2, "name": "Bob"},
-      {"id": 4, "name": "David"}
-    ]
+    "following": [10, 3],
+    "followedBy": [2, 4]
   },
   {
     "id": 6,
     "name": "Frank",
-    "following": [
-      {"id": 5, "name": "Eve"},
-      {"id": 1, "name": "Alice"}
-    ],
-    "followedBy": [
-      {"id": 2, "name": "Bob"},
-      {"id": 3, "name": "Charlie"}
-    ]
+    "following": [5, 1],
+    "followedBy": [2, 3]
   },
   {
     "id": 7,
     "name": "Grace",
-    "following": [
-      {"id": 4, "name": "David"},
-      {"id": 2, "name": "Bob"}
-    ],
-    "followedBy": [
-      {"id": 1, "name": "Alice"},
-      {"id": 8, "name": "Hank"}
-    ]
+    "following": [4, 2],
+    "followedBy": [1, 8]
   },
   {
     "id": 8,
     "name": "Hank",
-    "following": [
-      {"id": 6, "name": "Frank","following": [
-        {"id": 5, "name": "Eve"},
-        {"id": 1, "name": "Alice"}
-      ]},
-      {"id": 10, "name": "Jack"}
-    ],
-    "followedBy": [
-      {"id": 3, "name": "Charlie"},
-      {"id": 7, "name": "Grace"}
-    ]
+    "following": [6, 10],
+    "followedBy": [3, 7]
   },
   {
     "id": 9,
     "name": "Irene",
-    "following": [
-      {"id": 7, "name": "Grace"},
-      {"id": 1, "name": "Alice"}
-    ],
-    "followedBy": [
-      {"id": 4, "name": "David"},
-      {"id": 8, "name": "Hank"}
-    ]
+    "following": [7, 1],
+    "followedBy": [4, 8]
   },
   {
     "id": 10,
     "name": "Jack",
-    "following": [
-      {"id": 9, "name": "Irene"},
-      {"id": 2, "name": "Bob"}
-    ],
-    "followedBy": [
-      {"id": 5, "name": "Eve"},
-      {"id": 6, "name": "Frank"}
-    ]
+    "following": [9, 2],
+    "followedBy": [5, 6]
   }
 ]

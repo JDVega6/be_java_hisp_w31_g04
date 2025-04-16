@@ -5,5 +5,5 @@ import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import java.util.Optional;
 
 public interface IUserRepository {
-    Optional<User> getUserFollowed(Integer userId);
+    Optional<User> getById(Integer userId);
 }

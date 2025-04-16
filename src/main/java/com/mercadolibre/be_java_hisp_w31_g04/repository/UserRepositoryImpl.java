@@ -34,7 +34,7 @@ public class UserRepositoryImpl implements IUserRepository{
     }
 
     @Override
-    public Optional<User> getUserFollowed(Integer userId) {
+    public Optional<User> getById(Integer userId) {
         return listOfUsers.stream().filter(u->u.getId()==userId).findFirst();
     }
 }
