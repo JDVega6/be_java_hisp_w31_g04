@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "Alice",
+    "following": [2, 3],
+    "followedBy": [4, 5]
+  },
+  {
+    "id": 2,
+    "name": "Bob",
+    "following": [1, 6],
+    "followedBy": [1, 7]
+  },
+  {
+    "id": 3,
+    "name": "Charlie",
+    "following": [8, 5],
+    "followedBy": [1, 6]
+  },
+  {
+    "id": 4,
+    "name": "David",
+    "following": [2, 9],
+    "followedBy": [1, 3]
+  },
+  {
+    "id": 5,
+    "name": "Eve",
+    "following": [10, 3],
+    "followedBy": [2, 4]
+  },
+  {
+    "id": 6,
+    "name": "Frank",
+    "following": [5, 1],
+    "followedBy": [2, 3]
+  },
+  {
+    "id": 7,
+    "name": "Grace",
+    "following": [4, 2],
+    "followedBy": [1, 8]
+  },
+  {
+    "id": 8,
+    "name": "Hank",
+    "following": [6, 10],
+    "followedBy": [3, 7]
+  },
+  {
+    "id": 9,
+    "name": "Irene",
+    "following": [7, 1],
+    "followedBy": [4, 8]
+  },
+  {
+    "id": 10,
+    "name": "Jack",
+    "following": [9, 2],
+    "followedBy": [5, 6]
+  }
+]
