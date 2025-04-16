@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@Getter
 public class UserRepositoryImpl implements IUserRepository{
     private List<User> listOfUsers= new ArrayList<>();
 

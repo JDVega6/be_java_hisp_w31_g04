@@ -4,14 +4,12 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.UserFollowedDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
-import com.mercadolibre.be_java_hisp_w31_g04.util.Mapper;
+import com.mercadolibre.be_java_hisp_w31_g04.util.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -26,7 +24,7 @@ public class UserServiceImpl implements IUserService {
 
         List<UserFollowedDto> followed=new ArrayList<>();
         List<User> users= user.getFollowing().stream().map(u->userRepositoryImpl.getById(u).get()).toList();
-        users.forEach(user1->{followed.add(Mapper.toUserFollowedDto(user1));});
+        users.forEach(user1->{followed.add(UserMapper.toUserFollowedDto(user1));});
 
 
 
