@@ -5,10 +5,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -18,8 +15,8 @@ public class UserController {
     UserServiceImpl userServiceImpl;
 
     @GetMapping("/{userId}/followed/list")
-    public ResponseEntity<UserFollowedDto> getUserFollowed(@PathVariable Integer userId){
-        return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId), HttpStatus.OK);
+    public ResponseEntity<UserFollowedDto> getUserFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "name_asc") String order) {
+        return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId,order), HttpStatus.OK);
     }
 
 }
