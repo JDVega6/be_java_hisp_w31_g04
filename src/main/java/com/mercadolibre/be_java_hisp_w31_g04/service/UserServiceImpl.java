@@ -5,6 +5,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.UserFollowedDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
+import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
 import com.mercadolibre.be_java_hisp_w31_g04.util.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,10 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    @Autowired
-    UserRepositoryImpl userRepositoryImpl;
 
+    IUserRepository userRepositoryImpl;
+
+    public UserServiceImpl(UserRepositoryImpl userRepositoryImpl){this.userRepositoryImpl = userRepositoryImpl;}
     @Override
     public UserFollowedDto getUserFollowed(Integer userId, String order) {
         User user= userRepositoryImpl.getById(userId)
