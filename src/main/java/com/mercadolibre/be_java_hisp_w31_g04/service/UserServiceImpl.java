@@ -5,6 +5,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.UserFollowedDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
+import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
 import com.mercadolibre.be_java_hisp_w31_g04.util.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
