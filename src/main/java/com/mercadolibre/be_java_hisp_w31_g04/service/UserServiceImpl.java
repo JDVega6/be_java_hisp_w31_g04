@@ -27,9 +27,10 @@ public class UserServiceImpl implements IUserService {
                 .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
 
         List<UserDto> followed=new ArrayList<>();
-        List<User> users= user.getFollowing().stream().map(u->userRepositoryImpl.getById(u).get()).toList();
+        List<User> users= new ArrayList<>(user.getFollowing().stream().map(u->userRepositoryImpl.getById(u).get()).toList());
+        userRepositoryImpl.orderUsers(users, order);
         users.forEach(user1->{followed.add(UserMapper.toUserDto(user1));});
-        this.orderUsers(followed,order);
+
 
 
         return new UserDto(user.getId(), user.getName(), followed);
@@ -65,35 +66,16 @@ public class UserServiceImpl implements IUserService {
         User user = userRepositoryImpl.getById(userId)
                 .orElseThrow(() -> new NotFoundException("No se encontró nungun usuario"));
 
-        List<UserDto> followedBy = new ArrayList<>(user.getFollowedBy().stream()
-                .map(u -> userRepositoryImpl.getById(u).get())
-                .map(UserMapper::toUserDto)
-                .toList());
+        List<User> followedBy = new ArrayList<>(user.getFollowedBy().stream()
+                .map(u -> userRepositoryImpl.getById(u).get()).toList());
+        userRepositoryImpl.orderUsers(followedBy, order);
 
-        this.orderUsers(followedBy,order);
-
+        List<UserDto>followedByDto=followedBy.stream().map(UserMapper::toUserDto).toList();
 
 
-        return UserMapper.toUserWithFollowersDto(user, followedBy);
-    }
 
-    @Override
-    public void orderUsers(List<UserDto> user,String order) {
-        if(order.equals("name_asc")) {
-            user.sort(new Comparator<UserDto>() {
-                public int compare(UserDto obj1, UserDto obj2) {
-                    return obj1.getUser_name().compareTo(obj2.getUser_name());
-                }
-            });
-        }
-        if(order.equals("name_desc")) {
-            user.sort(new Comparator<UserDto>() {
-                public int compare(UserDto obj2, UserDto obj1) {
-                    return obj1.getUser_name().compareTo(obj2.getUser_name());
-                }
-            });
-        }
 
+        return UserMapper.toUserWithFollowersDto(user, followedByDto);
     }
 
 
