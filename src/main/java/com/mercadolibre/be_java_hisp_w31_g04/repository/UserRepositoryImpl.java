@@ -37,4 +37,27 @@ public class UserRepositoryImpl implements IUserRepository {
     public Optional<User> getById(Integer userId) {
         return listOfUsers.stream().filter(u->u.getId()==userId).findFirst();
     }
+
+    @Override
+    public void addFollowById(Integer userId, Integer userIdToFollow) {
+        //
+        listOfUsers.stream()
+                .filter(u -> u.getId() == userId).findFirst()
+                .ifPresent(user -> {
+                    if(!user.getFollowing().contains(userIdToFollow)){
+                        user.getFollowing().add(userIdToFollow);
+                    }
+                });
+
+        listOfUsers.stream()
+                .filter(u -> u.getId() == userIdToFollow)
+                .findFirst()
+                .ifPresent(followee -> {
+                    if (!followee.getFollowedBy().contains(userId)) {
+                        followee.getFollowedBy().add(userId);
+                    }
+                });
+    }
+
+
 }

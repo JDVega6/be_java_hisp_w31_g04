@@ -3,6 +3,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.service;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
+import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
@@ -47,6 +48,23 @@ public class UserServiceImpl implements IUserService {
 
 
         return new UserDto(user.getId(), user.getName(), followed);
+    }
+
+    @Override
+    public void addFollowById(Integer userId, Integer userIdToFollow) {
+
+        if(userId.equals(userIdToFollow)){
+            throw new BadRequestException("No es posible generar esta acción");
+        }
+
+        User user = userRepositoryImpl.getById(userId).orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
+        User toFollow = userRepositoryImpl.getById(userIdToFollow).orElseThrow(()-> new NotFoundException("Usuario a seguir no encontrado"));
+
+        if(user.getFollowing().contains(userIdToFollow)){
+            throw new BadRequestException("Ya sigues a este usuario");
+        }
+
+        userRepositoryImpl.addFollowById(userId, userIdToFollow);
     }
 
     @Override

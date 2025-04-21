@@ -23,6 +23,13 @@ public class UserController {
         return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId,order), HttpStatus.OK);
     }
 
+    @PostMapping("/{userId}/follow/{userIdToFollow}")
+    public ResponseEntity<?> createFollow(@PathVariable Integer userId,  @PathVariable Integer userIdToFollow){
+        userServiceImpl.addFollowById(userId, userIdToFollow);
+        return new ResponseEntity<>("Follow creado con éxito", HttpStatus.OK);
+    }
+
+
     @GetMapping("/{userId}/followers/count")
     public ResponseEntity<FollowersCountDto> getUserFollowersCount(@PathVariable int userId){
         return new ResponseEntity<>(userServiceImpl.getUserFollowersCount(userId), HttpStatus.OK);
