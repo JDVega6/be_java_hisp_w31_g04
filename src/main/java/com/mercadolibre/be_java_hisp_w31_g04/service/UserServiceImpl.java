@@ -29,22 +29,7 @@ public class UserServiceImpl implements IUserService {
         List<UserDto> followed=new ArrayList<>();
         List<User> users= user.getFollowing().stream().map(u->userRepositoryImpl.getById(u).get()).toList();
         users.forEach(user1->{followed.add(UserMapper.toUserDto(user1));});
-        if(order.equals("name_asc")) {
-            followed.sort(new Comparator<UserDto>() {
-                public int compare(UserDto obj1, UserDto obj2) {
-                    return obj1.getUser_name().compareTo(obj2.getUser_name());
-                }
-            });
-        }
-        if(order.equals("name_desc")) {
-            followed.sort(new Comparator<UserDto>() {
-                public int compare(UserDto obj2, UserDto obj1) {
-                    return obj1.getUser_name().compareTo(obj2.getUser_name());
-                }
-            });
-        }
-
-
+        this.orderUsers(followed,order);
 
 
         return new UserDto(user.getId(), user.getName(), followed);
@@ -76,15 +61,40 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserWithFollowersDto getUserWithFollowed(Integer userId) {
+    public UserWithFollowersDto getUserWithFollowed(Integer userId, String order) {
         User user = userRepositoryImpl.getById(userId)
                 .orElseThrow(() -> new NotFoundException("No se encontró nungun usuario"));
 
-        List<UserDto> followedBy = user.getFollowedBy().stream()
-                                    .map(u-> userRepositoryImpl.getById(u).get())
-                                    .map(UserMapper::toUserDto)
-                                    .toList();
+        List<UserDto> followedBy = new ArrayList<>(user.getFollowedBy().stream()
+                .map(u -> userRepositoryImpl.getById(u).get())
+                .map(UserMapper::toUserDto)
+                .toList());
+
+        this.orderUsers(followedBy,order);
+
+
 
         return UserMapper.toUserWithFollowersDto(user, followedBy);
     }
+
+    @Override
+    public void orderUsers(List<UserDto> user,String order) {
+        if(order.equals("name_asc")) {
+            user.sort(new Comparator<UserDto>() {
+                public int compare(UserDto obj1, UserDto obj2) {
+                    return obj1.getUser_name().compareTo(obj2.getUser_name());
+                }
+            });
+        }
+        if(order.equals("name_desc")) {
+            user.sort(new Comparator<UserDto>() {
+                public int compare(UserDto obj2, UserDto obj1) {
+                    return obj1.getUser_name().compareTo(obj2.getUser_name());
+                }
+            });
+        }
+
+    }
+
+
 }
