@@ -2,6 +2,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.service;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserFollowedDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
@@ -55,5 +56,18 @@ public class UserServiceImpl implements IUserService {
                 .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
 
         return UserMapper.toFollowersCountDto(user, user.getFollowedBy().size());
+    }
+
+    @Override
+    public UserWithFollowersDto getUserWithFollowed(Integer userId) {
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("No se encontró nungun usuario"));
+
+        List<UserFollowedDto> followedBy = user.getFollowedBy().stream()
+                                    .map(u-> userRepositoryImpl.getById(u).get())
+                                    .map(UserMapper::toUserFollowedDto)
+                                    .toList();
+
+        return UserMapper.toUserWithFollowedDto(user, followedBy);
     }
 }
