@@ -1,7 +1,6 @@
 package com.mercadolibre.be_java_hisp_w31_g04.dto;
 
 import lombok.Data;
-import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 
