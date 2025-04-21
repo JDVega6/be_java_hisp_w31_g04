@@ -1,12 +1,16 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Post;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
+import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IProductRepository;
+import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
+import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
 import com.mercadolibre.be_java_hisp_w31_g04.util.ProductMapper;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +18,11 @@ import org.springframework.stereotype.Service;
 public class ProductServiceImpl implements IProductService {
 
     IProductRepository productRepositoryImpl;
+    IUserRepository userRepositoryImpl;
 
-    public ProductServiceImpl(IProductRepository productRepositoryImpl){
+    public ProductServiceImpl(IProductRepository productRepositoryImpl, IUserRepository userRepositoryImpl) {
         this.productRepositoryImpl = productRepositoryImpl;
+        this.userRepositoryImpl = userRepositoryImpl;
     }
 
     @Override
@@ -34,5 +40,21 @@ public class ProductServiceImpl implements IProductService {
         Post post = ProductMapper.toPost(postProduct,product);
         productRepositoryImpl.saveProduct(product);
         productRepositoryImpl.savePost(post);
+    }
+
+    @Override
+    public PromoPostDto getPromoPostCountByUserId(int userId) {
+
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+
+        int countProductsPromo  = productRepositoryImpl.countPromoPostByUserId(userId);
+
+        return PromoPostDto.builder()
+                .userId(userId)
+                .userName(user.getName())
+                .promoProductsCount(countProductsPromo)
+                .build();
+
     }
 }

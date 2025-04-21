@@ -29,4 +29,15 @@ public class ProductRepositoryImpl implements IProductRepository {
         listOfProducts.add(product);
     }
 
+    @Override
+    public int countPromoPostByUserId(int userId) {
+
+        int countProductsPromo = Math.toIntExact( listOfPosts.stream()
+                                .filter(post -> post.getUserId() == userId)
+                                .filter(Post::getHasPromo)
+                                .count());
+
+        return countProductsPromo;
+    }
+
 }
