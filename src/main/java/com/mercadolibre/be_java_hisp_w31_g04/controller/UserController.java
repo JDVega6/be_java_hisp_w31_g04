@@ -7,10 +7,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -25,6 +22,13 @@ public class UserController {
     public ResponseEntity<UserFollowedDto> getUserFollowed(@PathVariable Integer userId){
         return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId), HttpStatus.OK);
     }
+
+    @PostMapping("/{userId}/follow/{userIdToFollow}")
+    public ResponseEntity<?> createFollow(@PathVariable Integer userId,  @PathVariable Integer userIdToFollow){
+        userServiceImpl.addFollowById(userId, userIdToFollow);
+        return new ResponseEntity<>("Follow creado con éxito", HttpStatus.OK);
+    }
+
 
     @GetMapping("/{userId}/followers/count")
     public ResponseEntity<FollowersCountDto> getUserFollowersCount(@PathVariable int userId){
