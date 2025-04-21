@@ -7,5 +7,5 @@ import java.util.Optional;
 public interface IUserRepository {
     Optional<User> getById(Integer userId);
 
-    void addFollowById(User user);
+    void addFollowById(Integer userId, Integer userIdToFollow);
 }
