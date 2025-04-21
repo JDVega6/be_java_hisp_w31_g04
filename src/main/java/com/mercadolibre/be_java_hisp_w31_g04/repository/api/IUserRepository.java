@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface IUserRepository {
     Optional<User> getById(Integer userId);
+
+    void deleteFollowById(User user, User toUnfollow);
 }

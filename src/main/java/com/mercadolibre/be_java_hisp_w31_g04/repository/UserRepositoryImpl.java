@@ -36,4 +36,12 @@ public class UserRepositoryImpl implements IUserRepository {
     public Optional<User> getById(Integer userId) {
         return listOfUsers.stream().filter(u->u.getId()==userId).findFirst();
     }
+
+    @Override
+    public void deleteFollowById(User user, User toUnfollow) {
+        //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
+        user.getFollowing().remove(Integer.valueOf(toUnfollow.getId()));
+        toUnfollow.getFollowedBy().remove(Integer.valueOf(user.getId()));
+        System.out.println(listOfUsers);
+    }
 }

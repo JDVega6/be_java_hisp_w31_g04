@@ -7,4 +7,6 @@ public interface IUserService {
     UserFollowedDto getUserFollowed(Integer userId);
 
     FollowersCountDto getUserFollowersCount(Integer userId);
+
+    void removeFollowById(Integer userId, Integer userIdToUnfollow);
 }

@@ -8,7 +8,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
 import com.mercadolibre.be_java_hisp_w31_g04.util.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,5 +41,23 @@ public class UserServiceImpl implements IUserService {
                 .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
 
         return UserMapper.toFollowersCountDto(user, user.getFollowedBy().size());
+    }
+
+    @Override
+    public void removeFollowById(Integer userId, Integer userIdToUnfollow) {
+        if (userId.equals(userIdToUnfollow)){
+            throw new BadRequestException("No es posible generar esta acción");
+        }
+
+        User user = userRepositoryImpl.getById(userId).
+                orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
+        User toUnfollow = userRepositoryImpl.getById(userIdToUnfollow)
+                .orElseThrow(()-> new NotFoundException("Usuario a dejar de seguir no encontrado"));
+
+        if (!user.getFollowing().contains(userIdToUnfollow)) {
+            throw new BadRequestException("No sigues a este usuario");
+        }
+
+        userRepositoryImpl.deleteFollowById(user, toUnfollow);
     }
 }
