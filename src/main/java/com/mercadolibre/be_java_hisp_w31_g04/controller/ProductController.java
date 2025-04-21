@@ -4,6 +4,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class ProductController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> PostPostProduct(@RequestBody PostProductDto PostProduct) {
+    public ResponseEntity<?> PostPostProduct(@Validated @RequestBody PostProductDto PostProduct) {
         productService.createPostProduct(PostProduct);
         return ResponseEntity.status(HttpStatus.CREATED).body("Created: Post del producto creado exitosamente.");
     }

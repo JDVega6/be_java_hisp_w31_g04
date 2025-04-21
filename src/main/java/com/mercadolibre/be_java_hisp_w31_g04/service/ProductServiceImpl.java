@@ -22,14 +22,18 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public void createPostProduct(PostProductDto postProduct) {
-        Optional<Product> product = productRepositoryImpl.findProductById(postProduct.getProduct_id());
-
-        if(product.isEmpty()){
-            throw new NotFoundException("Product not found");
+        if (postProduct.getId() == 0 || postProduct.getProduct().getId() == 0){
+            throw new NotFoundException("Product with id " + postProduct.getId() + " not found");
         }
 
-        Post post = ProductMapper.toPost(postProduct, product.get());
+        Product product = ProductMapper.toProduct(postProduct.getProduct());
+        boolean existProduct = productRepositoryImpl.existsProduct(product.getId());
+        if(existProduct){
+            throw new NotFoundException("");
+        }
+        Post post = ProductMapper.toPost(postProduct,product);
 
+        productRepositoryImpl.saveProduct(product);
         productRepositoryImpl.savePost(post);
     }
 }
