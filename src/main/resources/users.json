@@ -56,7 +56,7 @@
   {
     "id": 10,
     "name": "Jack",
-    "following": [9, 2],
+    "following": [9, 2, 3, 1, 6],
     "followedBy": [5, 6]
   }
 ]
