@@ -43,7 +43,7 @@ public class UserRepositoryImpl implements IUserRepository {
         listOfUsers.stream()
                 .filter(u -> u.getId() == userId).findFirst()
                 .ifPresent(user -> {
-                    if(!user.getFollowedBy().contains(userIdToFollow)){
+                    if(!user.getFollowing().contains(userIdToFollow)){
                         user.getFollowing().add(userIdToFollow);
                     }
                 });
@@ -56,7 +56,6 @@ public class UserRepositoryImpl implements IUserRepository {
                         followee.getFollowedBy().add(userId);
                     }
                 });
-
     }
 
 
