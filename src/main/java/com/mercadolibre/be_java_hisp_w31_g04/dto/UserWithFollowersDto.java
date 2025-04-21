@@ -14,5 +14,5 @@ import java.util.List;
 public class UserWithFollowersDto {
     private int user_id;
     private String user_name;
-    private List<UserFollowedDto> followers;
+    private List<UserDto> followers;
 }

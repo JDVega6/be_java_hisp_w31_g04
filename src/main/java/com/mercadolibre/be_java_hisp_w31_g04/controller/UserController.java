@@ -1,15 +1,13 @@
 package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.UserFollowedDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.service.UserServiceImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -21,7 +19,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followed/list")
-    public ResponseEntity<UserFollowedDto> getUserFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "name_asc") String order) {
+    public ResponseEntity<UserDto> getUserFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "name_asc") String order) {
         return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId,order), HttpStatus.OK);
     }
 
