@@ -1,6 +1,7 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.PostPromoProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostByUserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
@@ -38,6 +39,30 @@ public class ProductServiceImpl implements IProductService {
         }
 
         Post post = ProductMapper.toPost(postProduct,product);
+        productRepositoryImpl.saveProduct(product);
+        productRepositoryImpl.savePost(post);
+    }
+
+    @Override
+    public void createPostProduct(PostPromoProductDto postPromoProduct) {
+        userRepositoryImpl.getById(postPromoProduct.getUser_id())
+                .orElseThrow(() -> new NotFoundException("No se encontró un usuario con ese ID"));
+
+        if (postPromoProduct.getId() == 0 || postPromoProduct.getProduct().getId() == 0){
+            throw new BadRequestException("Se debe ingresar el id del post y del producto");
+        }
+
+        if (!postPromoProduct.getHasPromo() || postPromoProduct.getDiscount().equals(0.0)) {
+            throw  new BadRequestException("No se puede crear un post de un producto en descuento sin descuento");
+        }
+
+        Product product = ProductMapper.toProduct(postPromoProduct.getProduct());
+        boolean existProduct = productRepositoryImpl.existsProduct(product.getId());
+        if(existProduct){
+            throw new BadRequestException("El producto ya existe");
+        }
+
+        Post post = ProductMapper.toPost(postPromoProduct,product);
         productRepositoryImpl.saveProduct(product);
         productRepositoryImpl.savePost(post);
     }

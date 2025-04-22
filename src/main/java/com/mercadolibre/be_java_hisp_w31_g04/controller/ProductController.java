@@ -1,6 +1,7 @@
 package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.PostPromoProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostByUserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
@@ -34,5 +35,12 @@ public class ProductController {
     public ResponseEntity<PromoPostByUserDto> GetPromoPostByUser(@RequestParam Integer user_id) {
         return new ResponseEntity<PromoPostByUserDto>(productService.GetPromoPostByUser(user_id), HttpStatus.OK);
     }
+
+    @PostMapping("/promo-post")
+    public ResponseEntity<?> CreatePostPromoProduct(@RequestBody PostPromoProductDto postPromoProductDto) {
+        productService.createPostProduct(postPromoProductDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Created: Post del producto en promoción creado exitosamente.");
+    }
+
 
 }

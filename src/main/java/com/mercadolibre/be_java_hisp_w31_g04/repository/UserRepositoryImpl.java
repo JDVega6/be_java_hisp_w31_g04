@@ -43,10 +43,8 @@ public class UserRepositoryImpl implements IUserRepository {
         //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
         user.getFollowing().remove(Integer.valueOf(toUnfollow.getId()));
         toUnfollow.getFollowedBy().remove(Integer.valueOf(user.getId()));
-        System.out.println(listOfUsers);
     }
     public void addFollowById(Integer userId, Integer userIdToFollow) {
-        //
         listOfUsers.stream()
                 .filter(u -> u.getId() == userId).findFirst()
                 .ifPresent(user -> {
