@@ -12,4 +12,6 @@ public interface IUserRepository {
     void addFollowById(Integer userId, Integer userIdToFollow);
 
     void orderUsers(List<User> user, String order);
+
+    void deleteUserById(Integer userId);
 }

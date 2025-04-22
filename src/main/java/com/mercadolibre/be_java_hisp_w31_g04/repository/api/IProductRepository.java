@@ -12,4 +12,5 @@ public interface IProductRepository {
     void saveProduct(Product product);
     int countPromoPostByUserId(int userId);
     List<Post> getPromoPostByUser(int userId);
+    void deletePostByUserId(int userId);
 }

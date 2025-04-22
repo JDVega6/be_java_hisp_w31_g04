@@ -44,6 +44,14 @@ public class ProductRepositoryImpl implements IProductRepository {
     public List<Post> getPromoPostByUser(int userId) {
         return listOfPosts.stream().filter(post -> post.getUserId() == userId && post.getHasPromo()).toList();
     }
+
+    @Override
+    public void deletePostByUserId(int userId) {
+        listOfPosts.stream().filter(post -> post.getUserId() == userId)
+                            .forEach(post -> listOfProducts.remove(post.getProduct()));
+
+        listOfPosts.removeIf(post -> post.getUserId() == userId);
+    }
 }
 
 

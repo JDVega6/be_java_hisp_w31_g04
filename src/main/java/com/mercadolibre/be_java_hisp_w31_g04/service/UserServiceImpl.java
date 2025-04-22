@@ -7,6 +7,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
+import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IProductRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
 import com.mercadolibre.be_java_hisp_w31_g04.util.UserMapper;
@@ -19,8 +20,12 @@ public class UserServiceImpl implements IUserService {
 
 
     IUserRepository userRepositoryImpl;
+    IProductRepository productRepositoryImpl;
 
-    public UserServiceImpl(UserRepositoryImpl userRepositoryImpl){this.userRepositoryImpl = userRepositoryImpl;}
+    public UserServiceImpl(IUserRepository userRepositoryImpl, IProductRepository productRepositoryImpl) {
+        this.userRepositoryImpl = userRepositoryImpl;
+        this.productRepositoryImpl = productRepositoryImpl;
+    }
     @Override
     public UserDto getUserFollowed(Integer userId, String order) {
         User user= userRepositoryImpl.getById(userId)
@@ -82,18 +87,24 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserWithFollowersDto getUserWithFollowed(Integer userId, String order) {
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró nungun usuario"));
+                .orElseThrow(() -> new NotFoundException("No se encontró ningun usuario"));
 
         List<User> followedBy = new ArrayList<>(user.getFollowedBy().stream()
                 .map(u -> userRepositoryImpl.getById(u).get()).toList());
+
         userRepositoryImpl.orderUsers(followedBy, order);
-
         List<UserDto>followedByDto=followedBy.stream().map(UserMapper::toUserDto).toList();
-
-
-
-
         return UserMapper.toUserWithFollowersDto(user, followedByDto);
+    }
+
+    @Override
+    public void removeUserById(Integer userId) {
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("No se encontró ningun usuario"));
+
+        productRepositoryImpl.deletePostByUserId(userId);
+        userRepositoryImpl.deleteUserById(userId);
+
     }
 
 

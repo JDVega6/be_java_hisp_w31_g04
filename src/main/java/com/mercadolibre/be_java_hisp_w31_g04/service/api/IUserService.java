@@ -15,4 +15,5 @@ public interface IUserService {
 
     UserWithFollowersDto getUserWithFollowed(Integer userId, String order);
 
+    void removeUserById(Integer userId);
 }
