@@ -44,7 +44,7 @@ public class UserServiceImpl implements IUserService {
         }
 
         User user = userRepositoryImpl.getById(userId).orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
-        User toFollow = userRepositoryImpl.getById(userIdToFollow).orElseThrow(()-> new NotFoundException("Usuario a seguir no encontrado"));
+        userRepositoryImpl.getById(userIdToFollow).orElseThrow(()-> new NotFoundException("Usuario a seguir no encontrado"));
 
         if(user.getFollowing().contains(userIdToFollow)){
             throw new BadRequestException("Ya sigues a este usuario");
