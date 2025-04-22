@@ -68,7 +68,7 @@ public class ProductServiceImpl implements IProductService {
         return PromoPostByUserDto.builder()
                 .userId(userId)
                 .userName(user.getName())
-                .post(productRepositoryImpl.getPromoPostByUser(userId))
+                .posts(productRepositoryImpl.getPromoPostByUser(userId).stream().map(ProductMapper::toPostPromoDto).toList())
                 .build();
 
     }

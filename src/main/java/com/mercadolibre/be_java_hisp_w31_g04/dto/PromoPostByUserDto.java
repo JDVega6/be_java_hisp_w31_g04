@@ -15,5 +15,5 @@ public class PromoPostByUserDto {
     private int userId;
     @JsonProperty("user_name")
     private String userName;
-    private List<Post> post;
+    private List<PostPromoProductDto> posts;
 }
