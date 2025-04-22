@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 @Data
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
     private int user_id;
     private String user_name;
