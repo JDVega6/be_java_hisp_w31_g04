@@ -1,15 +1,9 @@
 package com.mercadolibre.be_java_hisp_w31_g04.repository;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Post;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IProductRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ResourceUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,20 +16,30 @@ public class ProductRepositoryImpl implements IProductRepository {
     private List<Product> listOfProducts = new ArrayList<>();
     private List<Post> listOfPosts = new ArrayList<>();
 
-    public ProductRepositoryImpl() throws IOException{
-        loadDataPosts();
+    public ProductRepositoryImpl(){
+        setListOfPostsMannually();
     }
 
-    //Esta fallando con error de controller ??
-    public void loadDataPosts() throws IOException{
-        File file;
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Post> posts;
+    public void setListOfPostsMannually(){
+        Product p1 = Product.builder()
+                .id(2)
+                .name("Pc Gamer")
+                .type("Game")
+                .brand("HP")
+                .color("Blue")
+                .notes("NA")
+                .build();
 
-        file= ResourceUtils.getFile("classpath:posts.json");
-        posts= objectMapper.readValue(file,new TypeReference<List<Post>>(){});
-
-        listOfPosts = posts;
+        listOfPosts.add(Post.builder()
+                .userId(2)
+                .id(2)
+                .date(LocalDate.of(2025,5,1))
+                .product(p1)
+                .category(100)
+                .price(25.37)
+                .hasPromo(true)
+                .discount(63.9)
+                .build());
     }
 
     @Override
@@ -55,6 +59,8 @@ public class ProductRepositoryImpl implements IProductRepository {
 
     @Override
     public List<Post> findPostsBySellerIdsSince(List<Integer> sellerIds, LocalDate fromDate) {
+
+
         return listOfPosts.stream()
                 .filter(post -> sellerIds.contains(post.getUserId()))
                 .filter(post -> !post.getDate().isBefore(fromDate))

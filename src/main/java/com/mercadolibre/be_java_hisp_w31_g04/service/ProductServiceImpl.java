@@ -20,13 +20,12 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl implements IProductService {
 
-    private final UserRepositoryImpl userRepositoryImpl;
     IProductRepository productRepositoryImpl;
     IUserRepository userRepositoryImp;
 
     public ProductServiceImpl(IProductRepository productRepositoryImpl, UserRepositoryImpl userRepositoryImpl){
         this.productRepositoryImpl = productRepositoryImpl;
-        this.userRepositoryImpl = userRepositoryImpl;
+        this.userRepositoryImp = userRepositoryImpl;
     }
 
     @Override
@@ -48,7 +47,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public List<PostProductDto> getFollowedPosts(int userId){
-        if (userId == 0 || userId < 0 ){
+        if ( userId <= 0 ){
             throw new BadRequestException("Debe ingresar un id valido");
         }
 
@@ -57,7 +56,7 @@ public class ProductServiceImpl implements IProductService {
 
         List<Integer> sellerIds = user.getFollowing();
         if (sellerIds.isEmpty()) {
-            return List.of();
+            throw new BadRequestException("El usuario seleccionado no posee ningun vendedor con post recientes");
         }
 
         LocalDate fromDate = LocalDate.now().minusWeeks(2);
