@@ -66,8 +66,8 @@ public class ProductServiceImpl implements IProductService {
 
 
         return PromoPostByUserDto.builder()
-                .user_id(userId)
-                .user_name(user.getName())
+                .userId(userId)
+                .userName(user.getName())
                 .post(productRepositoryImpl.getPromoPostByUser(userId))
                 .build();
 
