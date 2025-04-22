@@ -10,42 +10,55 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class ProductRepositoryImpl implements IProductRepository {
 
-    private List<Product> listOfProducts;
+    private List<Product> listOfProducts = new ArrayList<>();
     private List<Post> listOfPosts = new ArrayList<>();
 
-    private final AtomicInteger postIdCounter = new AtomicInteger(1);
+    public ProductRepositoryImpl() throws IOException{
+        loadDataPosts();
+    }
 
-    public ProductRepositoryImpl() throws IOException {
-        loadDataBase();
+    //Esta fallando con error de controller ??
+    public void loadDataPosts() throws IOException{
+        File file;
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Post> posts ;
+
+        file= ResourceUtils.getFile("classpath:posts.json");
+        posts= objectMapper.readValue(file,new TypeReference<List<Post>>(){});
+
+        listOfPosts = posts;
     }
 
     @Override
-    public Optional<Product> findProductById(int id) {
-        return listOfProducts.stream().filter(product -> product.getId() == id).findFirst();
+    public boolean existsProduct(int id) {
+        return listOfProducts.stream().anyMatch(product -> product.getId() == id);
     }
 
     @Override
     public void savePost(Post postProduct) {
-        postProduct.setId(postIdCounter.getAndIncrement());
         listOfPosts.add(postProduct);
     }
 
-    private void loadDataBase() throws IOException {
-        File file;
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Product> products ;
+    @Override
+    public void saveProduct(Product product) {
+        listOfProducts.add(product);
+    }
 
-        file= ResourceUtils.getFile("classpath:products.json");
-        products= objectMapper.readValue(file,new TypeReference<List<Product>>(){});
-
-        listOfProducts = products;
+    @Override
+    public List<Post> findPostsBySellerIdsSince(List<Integer> sellerIds, LocalDate fromDate) {
+        return listOfPosts.stream()
+                .filter(post -> sellerIds.contains(post.getUserId()))
+                .filter(post -> !post.getDate().isBefore(fromDate))
+                .sorted(Comparator.comparing(Post::getDate).reversed())
+                .collect(Collectors.toList());
     }
 }

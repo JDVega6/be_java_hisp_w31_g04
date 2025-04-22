@@ -2,6 +2,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import org.springframework.stereotype.Repository;
@@ -10,8 +11,10 @@ import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
@@ -38,10 +41,43 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public void addFollowById(User user) {
+    public void addFollowById(Integer userId, Integer userIdToFollow) {
         //
         listOfUsers.stream()
-                .filter(u -> u.getId() == user.getId()).findFirst()
-                .ifPresent(u -> u.setFollowing(new ArrayList<>(user.getFollowing())));
+                .filter(u -> u.getId() == userId).findFirst()
+                .ifPresent(user -> {
+                    if(!user.getFollowing().contains(userIdToFollow)){
+                        user.getFollowing().add(userIdToFollow);
+                    }
+                });
+
+        listOfUsers.stream()
+                .filter(u -> u.getId() == userIdToFollow)
+                .findFirst()
+                .ifPresent(followee -> {
+                    if (!followee.getFollowedBy().contains(userId)) {
+                        followee.getFollowedBy().add(userId);
+                    }
+                });
     }
+
+    @Override
+    public void orderUsers(List<User> user, String order) {
+        if(order.equals("name_asc")) {
+            user.sort(new Comparator<User>() {
+                public int compare(User obj1, User obj2) {
+                    return obj1.getName().compareTo(obj2.getName());
+                }
+            });
+        }
+        if(order.equals("name_desc")) {
+            user.sort(new Comparator<User>() {
+                public int compare(User obj2, User obj1) {
+                    return obj1.getName().compareTo(obj2.getName());
+                }
+            });
+        }
+    }
+
+
 }

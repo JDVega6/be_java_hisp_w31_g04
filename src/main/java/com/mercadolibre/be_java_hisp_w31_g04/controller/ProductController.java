@@ -1,28 +1,36 @@
 package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowedPostsResponseDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
+import com.mercadolibre.be_java_hisp_w31_g04.service.ProductServiceImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
 
+    private final ProductServiceImpl productServiceImpl;
     IProductService productService;
 
-    public ProductController(IProductService productService) {
+    public ProductController(IProductService productService, ProductServiceImpl productServiceImpl) {
         this.productService = productService;
+        this.productServiceImpl = productServiceImpl;
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> PostPostProduct(@RequestBody PostProductDto PostProduct) {
+    public ResponseEntity<?> PostPostProduct(@Validated @RequestBody PostProductDto PostProduct) {
         productService.createPostProduct(PostProduct);
         return ResponseEntity.status(HttpStatus.CREATED).body("Created: Post del producto creado exitosamente.");
     }
 
+    @GetMapping("/followed/{userId}/list")
+    public ResponseEntity<List<PostProductDto>> getFollowePosts(@PathVariable int userId){
+        return new ResponseEntity<List<PostProductDto>>(productServiceImpl.getFollowedPosts(userId), HttpStatus.OK);
+    }
 }
