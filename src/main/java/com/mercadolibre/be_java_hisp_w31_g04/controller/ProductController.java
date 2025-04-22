@@ -2,6 +2,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowedPostsResponseDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
 import com.mercadolibre.be_java_hisp_w31_g04.service.ProductServiceImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,13 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Created: Post del producto creado exitosamente.");
     }
 
+    @GetMapping("/promo-post/count")
+    public ResponseEntity<PromoPostDto> GetPromoPostCount(@RequestParam Integer user_id) {
+        return new ResponseEntity<PromoPostDto>(productService.getPromoPostCountByUserId(user_id), HttpStatus.OK);
+    }
+
     @GetMapping("/followed/{userId}/list")
     public ResponseEntity<List<PostProductDto>> getFollowePosts(@PathVariable int userId){
-        return new ResponseEntity<List<PostProductDto>>(productServiceImpl.getFollowedPosts(userId), HttpStatus.OK);
+        return new ResponseEntity<List<PostProductDto>>(productService.getFollowedPosts(userId), HttpStatus.OK);
     }
 }

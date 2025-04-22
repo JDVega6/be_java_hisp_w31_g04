@@ -1,12 +1,12 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Post;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
-import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IProductRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements IProductService {
 
     IProductRepository productRepositoryImpl;
-    IUserRepository userRepositoryImp;
+    IUserRepository userRepositoryImpl;
 
-    public ProductServiceImpl(IProductRepository productRepositoryImpl, UserRepositoryImpl userRepositoryImpl){
+    public ProductServiceImpl(IProductRepository productRepositoryImpl, IUserRepository userRepositoryImpl) {
         this.productRepositoryImpl = productRepositoryImpl;
-        this.userRepositoryImp = userRepositoryImpl;
+        this.userRepositoryImpl = userRepositoryImpl;
     }
 
     @Override
@@ -46,12 +46,28 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    public PromoPostDto getPromoPostCountByUserId(int userId) {
+
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+
+        int countProductsPromo  = productRepositoryImpl.countPromoPostByUserId(userId);
+
+        return PromoPostDto.builder()
+                .userId(userId)
+                .userName(user.getName())
+                .promoProductsCount(countProductsPromo)
+                .build();
+
+    }
+
+    @Override
     public List<PostProductDto> getFollowedPosts(int userId){
         if ( userId <= 0 ){
             throw new BadRequestException("Debe ingresar un id valido");
         }
 
-        User user = userRepositoryImp.getById(userId)
+        User user = userRepositoryImpl.getById(userId)
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
         List<Integer> sellerIds = user.getFollowing();

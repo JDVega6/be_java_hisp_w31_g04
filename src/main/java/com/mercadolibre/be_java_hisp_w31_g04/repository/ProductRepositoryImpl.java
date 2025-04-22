@@ -58,6 +58,17 @@ public class ProductRepositoryImpl implements IProductRepository {
     }
 
     @Override
+    public int countPromoPostByUserId(int userId) {
+
+        int countProductsPromo = Math.toIntExact( listOfPosts.stream()
+                                .filter(post -> post.getUserId() == userId)
+                                .filter(Post::getHasPromo)
+                                .count());
+
+        return countProductsPromo;
+    }
+
+    @Override
     public List<Post> findPostsBySellerIdsSince(List<Integer> sellerIds, LocalDate fromDate) {
 
 
