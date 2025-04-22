@@ -30,7 +30,7 @@ public class ProductRepositoryImpl implements IProductRepository {
     public void loadDataPosts() throws IOException{
         File file;
         ObjectMapper objectMapper = new ObjectMapper();
-        List<Post> posts ;
+        List<Post> posts;
 
         file= ResourceUtils.getFile("classpath:posts.json");
         posts= objectMapper.readValue(file,new TypeReference<List<Post>>(){});
