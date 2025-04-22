@@ -7,4 +7,5 @@ public interface IProductRepository {
     boolean existsProduct(int id);
     void savePost(Post postProduct);
     void saveProduct(Product product);
+    int countPromoPostByUserId(int userId);
 }
