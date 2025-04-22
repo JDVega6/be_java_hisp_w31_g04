@@ -1,8 +1,6 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service.api;
 
-import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.*;
 
 public interface IUserService {
     UserDto getUserFollowed(Integer userId, String order);
@@ -14,5 +12,7 @@ public interface IUserService {
     void removeFollowById(Integer userId, Integer userIdToUnfollow);
 
     UserWithFollowersDto getUserWithFollowed(Integer userId, String order);
+
+    void createUser(UserToCreateDto dtoUser);
 
 }

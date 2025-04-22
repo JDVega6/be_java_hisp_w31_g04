@@ -2,6 +2,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.service;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
@@ -94,6 +95,19 @@ public class UserServiceImpl implements IUserService {
 
 
         return UserMapper.toUserWithFollowersDto(user, followedByDto);
+    }
+
+    @Override
+    public void createUser(UserToCreateDto dtoUser) {
+        if(dtoUser.getName().length()>=20){
+            throw new BadRequestException("el nombre no puede tener mas de 20 caracteres");
+        }else if(dtoUser.getName().isEmpty()){
+            throw new BadRequestException("el nombre no puede estar vacio");
+        }
+
+        userRepositoryImpl.saveUser(new User(userRepositoryImpl.getUserId(),dtoUser.getName(),new ArrayList<>(),new ArrayList<>()));
+
+
     }
 
 

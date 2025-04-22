@@ -2,6 +2,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import org.springframework.stereotype.Repository;
@@ -17,8 +18,10 @@ import java.util.Optional;
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
     private List<User> listOfUsers= new ArrayList<>();
+    private int userId;
 
     public UserRepositoryImpl() throws IOException{
+        userId = 0;
         loadDataBase();
     }
 
@@ -81,6 +84,19 @@ public class UserRepositoryImpl implements IUserRepository {
                 }
             });
         }
+    }
+
+    @Override
+    public void saveUser(User user) {
+        listOfUsers.add(user);
+        System.out.println(listOfUsers);
+
+    }
+
+    @Override
+    public int getUserId() {
+        userId ++;
+        return userId;
     }
 
 
