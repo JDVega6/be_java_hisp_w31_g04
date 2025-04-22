@@ -1,5 +1,6 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service;
 
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowedPostsResponseDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostByUserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
@@ -95,5 +96,16 @@ public class ProductServiceImpl implements IProductService {
         List<Post> posts = productRepositoryImpl.findPostsBySellerIdsSince(sellerIds,fromDate);
 
         return posts.stream().map(ProductMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public FollowedPostsResponseDto getFollowedPostsResponse(int userId) {
+        List<PostProductDto> posts = getFollowedPosts(userId);
+
+        FollowedPostsResponseDto response = new FollowedPostsResponseDto();
+        response.setUserId(userId);
+        response.setPosts(posts);
+
+        return response;
     }
 }
