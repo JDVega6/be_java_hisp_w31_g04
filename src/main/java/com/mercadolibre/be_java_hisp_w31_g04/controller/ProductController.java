@@ -3,6 +3,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.controller;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowedPostsResponseDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostByUserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
 import com.mercadolibre.be_java_hisp_w31_g04.service.ProductServiceImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
@@ -34,6 +35,11 @@ public class ProductController {
     @GetMapping("/promo-post/count")
     public ResponseEntity<PromoPostDto> GetPromoPostCount(@RequestParam Integer user_id) {
         return new ResponseEntity<PromoPostDto>(productService.getPromoPostCountByUserId(user_id), HttpStatus.OK);
+    }
+
+    @GetMapping("/promo-post/list")
+    public ResponseEntity<PromoPostByUserDto> GetPromoPostByUser(@RequestParam Integer user_id) {
+        return new ResponseEntity<PromoPostByUserDto>(productService.GetPromoPostByUser(user_id), HttpStatus.OK);
     }
 
     @GetMapping("/followed/{userId}/list")

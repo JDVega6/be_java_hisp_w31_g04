@@ -2,7 +2,6 @@ package com.mercadolibre.be_java_hisp_w31_g04.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import org.springframework.stereotype.Repository;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
@@ -41,6 +39,12 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
+    public void deleteFollowById(User user, User toUnfollow) {
+        //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
+        user.getFollowing().remove(Integer.valueOf(toUnfollow.getId()));
+        toUnfollow.getFollowedBy().remove(Integer.valueOf(user.getId()));
+        System.out.println(listOfUsers);
+    }
     public void addFollowById(Integer userId, Integer userIdToFollow) {
         //
         listOfUsers.stream()

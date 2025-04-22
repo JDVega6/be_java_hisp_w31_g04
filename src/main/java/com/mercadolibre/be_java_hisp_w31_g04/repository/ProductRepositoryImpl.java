@@ -69,6 +69,10 @@ public class ProductRepositoryImpl implements IProductRepository {
     }
 
     @Override
+    public List<Post> getPromoPostByUser(int userId) {
+        return listOfPosts.stream().filter(post -> post.getUserId() == userId && post.getHasPromo()).toList();
+    }
+    @Override
     public List<Post> findPostsBySellerIdsSince(List<Integer> sellerIds, LocalDate fromDate) {
 
 
@@ -79,3 +83,6 @@ public class ProductRepositoryImpl implements IProductRepository {
                 .collect(Collectors.toList());
     }
 }
+
+
+
