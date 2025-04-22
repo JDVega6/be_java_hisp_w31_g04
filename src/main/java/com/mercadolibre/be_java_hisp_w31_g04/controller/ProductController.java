@@ -1,6 +1,7 @@
 package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowedPostsResponseDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
 import com.mercadolibre.be_java_hisp_w31_g04.service.ProductServiceImpl;
@@ -36,7 +37,14 @@ public class ProductController {
     }
 
     @GetMapping("/followed/{userId}/list")
-    public ResponseEntity<List<PostProductDto>> getFollowePosts(@PathVariable int userId){
-        return new ResponseEntity<List<PostProductDto>>(productService.getFollowedPosts(userId), HttpStatus.OK);
+    public ResponseEntity<FollowedPostsResponseDto> getFollowePosts(@PathVariable int userId){
+
+        List<PostProductDto> post = productService.getFollowedPosts(userId);
+
+        FollowedPostsResponseDto response = new FollowedPostsResponseDto();
+        response.setUserId(userId);
+        response.setPosts(post);
+
+        return new ResponseEntity<FollowedPostsResponseDto>(response, HttpStatus.OK);
     }
 }
