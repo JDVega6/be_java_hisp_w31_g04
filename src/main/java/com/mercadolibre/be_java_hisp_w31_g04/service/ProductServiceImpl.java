@@ -1,6 +1,7 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostByUserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
@@ -54,6 +55,20 @@ public class ProductServiceImpl implements IProductService {
                 .userId(userId)
                 .userName(user.getName())
                 .promoProductsCount(countProductsPromo)
+                .build();
+
+    }
+
+    @Override
+    public PromoPostByUserDto GetPromoPostByUser(int userId) {
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+
+
+        return PromoPostByUserDto.builder()
+                .user_id(userId)
+                .user_name(user.getName())
+                .post(productRepositoryImpl.getPromoPostByUser(userId))
                 .build();
 
     }

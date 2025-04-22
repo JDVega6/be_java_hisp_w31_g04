@@ -40,4 +40,11 @@ public class ProductRepositoryImpl implements IProductRepository {
         return countProductsPromo;
     }
 
+    @Override
+    public List<Post> getPromoPostByUser(int userId) {
+        return listOfPosts.stream().filter(post -> post.getUserId() == userId && post.getHasPromo()).toList();
+    }
 }
+
+
+
