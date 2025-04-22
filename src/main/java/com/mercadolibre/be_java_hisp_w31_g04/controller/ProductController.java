@@ -18,12 +18,10 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
-    private final ProductServiceImpl productServiceImpl;
     IProductService productService;
 
-    public ProductController(IProductService productService, ProductServiceImpl productServiceImpl) {
+    public ProductController(IProductService productService) {
         this.productService = productService;
-        this.productServiceImpl = productServiceImpl;
     }
 
     @PostMapping("/post")
