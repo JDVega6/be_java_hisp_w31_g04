@@ -44,7 +44,7 @@ public class UserServiceImpl implements IUserService {
         }
 
         User user = userRepositoryImpl.getById(userId).orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
-        User toFollow = userRepositoryImpl.getById(userIdToFollow).orElseThrow(()-> new NotFoundException("Usuario a seguir no encontrado"));
+        userRepositoryImpl.getById(userIdToFollow).orElseThrow(()-> new NotFoundException("Usuario a seguir no encontrado"));
 
         if(user.getFollowing().contains(userIdToFollow)){
             throw new BadRequestException("Ya sigues a este usuario");
@@ -59,6 +59,24 @@ public class UserServiceImpl implements IUserService {
                 .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
 
         return UserMapper.toFollowersCountDto(user, user.getFollowedBy().size());
+    }
+
+    @Override
+    public void removeFollowById(Integer userId, Integer userIdToUnfollow) {
+        if (userId.equals(userIdToUnfollow)){
+            throw new BadRequestException("No es posible generar esta acción");
+        }
+
+        User user = userRepositoryImpl.getById(userId).
+                orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
+        User toUnfollow = userRepositoryImpl.getById(userIdToUnfollow)
+                .orElseThrow(()-> new NotFoundException("Usuario a dejar de seguir no encontrado"));
+
+        if (!user.getFollowing().contains(userIdToUnfollow)) {
+            throw new BadRequestException("No sigues a este usuario");
+        }
+
+        userRepositoryImpl.deleteFollowById(user, toUnfollow);
     }
 
     @Override
