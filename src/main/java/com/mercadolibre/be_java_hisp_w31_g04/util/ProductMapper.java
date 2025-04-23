@@ -10,6 +10,7 @@ public class ProductMapper {
 
     public static Post toPost(PostProductDto postProduct, Product product) {
         return Post.builder()
+                .id(postProduct.getId())
                 .userId(postProduct.getUser_id())
                 .date(postProduct.getDate())
                 .category(postProduct.getCategory())
@@ -23,6 +24,7 @@ public class ProductMapper {
     public static Post toPost(PostPromoProductDto postPromoProduct, Product product) {
 
         return Post.builder()
+                .id(postPromoProduct.getId())
                 .userId(postPromoProduct.getUser_id())
                 .date(postPromoProduct.getDate())
                 .category(postPromoProduct.getCategory())

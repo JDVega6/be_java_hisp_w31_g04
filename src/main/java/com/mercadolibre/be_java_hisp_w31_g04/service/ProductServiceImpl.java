@@ -42,6 +42,10 @@ public class ProductServiceImpl implements IProductService {
             throw new BadRequestException("Se debe ingresar el id del post y del producto");
         }
 
+        if (productRepositoryImpl.getPostById(postProduct.getId()) != null) {
+            throw new BadRequestException("El post ya fue creado");
+        }
+
         Product product = ProductMapper.toProduct(postProduct.getProduct());
         boolean existProduct = productRepositoryImpl.existsProduct(product.getId());
         if(existProduct){
@@ -64,6 +68,10 @@ public class ProductServiceImpl implements IProductService {
 
         if (!postPromoProduct.getHasPromo() || postPromoProduct.getDiscount().equals(0.0)) {
             throw  new BadRequestException("No se puede crear un post de un producto en descuento sin descuento");
+        }
+
+        if (productRepositoryImpl.getPostById(postPromoProduct.getId()) != null) {
+            throw new BadRequestException("El post ya fue creado");
         }
 
         Product product = ProductMapper.toProduct(postPromoProduct.getProduct());
