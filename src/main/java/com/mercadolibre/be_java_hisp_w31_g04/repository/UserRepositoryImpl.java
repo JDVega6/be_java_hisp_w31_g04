@@ -2,6 +2,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
@@ -18,8 +19,10 @@ import java.util.Optional;
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
     private List<User> listOfUsers= new ArrayList<>();
+    private int userId;
 
     public UserRepositoryImpl() throws IOException{
+        userId = 0;
         loadDataBase();
     }
 
@@ -86,6 +89,18 @@ public class UserRepositoryImpl implements IUserRepository {
             throw new BadRequestException("Parámetro 'order' inválido. Usa 'name_asc' o 'name_desc'.");
         }
     }
+    }
+
+    @Override
+    public void saveUser(User user) {
+        listOfUsers.add(user);
+
+    }
+
+    @Override
+    public int getUserId() {
+        userId ++;
+        return userId;
     }
 
 
