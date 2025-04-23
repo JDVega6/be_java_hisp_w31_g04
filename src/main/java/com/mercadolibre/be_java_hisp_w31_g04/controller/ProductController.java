@@ -1,13 +1,18 @@
 package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowedPostsResponseDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostByUserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
+import com.mercadolibre.be_java_hisp_w31_g04.service.ProductServiceImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -35,4 +40,8 @@ public class ProductController {
         return new ResponseEntity<PromoPostByUserDto>(productService.GetPromoPostByUser(user_id), HttpStatus.OK);
     }
 
+    @GetMapping("/followed/{userId}/list")
+    public ResponseEntity<FollowedPostsResponseDto> getFollowePosts(@PathVariable int userId){
+        return new ResponseEntity<FollowedPostsResponseDto>(productService.getFollowedPostsResponse(userId), HttpStatus.OK);
+    }
 }
