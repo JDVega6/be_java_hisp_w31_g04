@@ -1,5 +1,6 @@
 package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
@@ -19,9 +20,20 @@ public class UserController {
         this.userServiceImpl = userServiceImpl;
     }
 
+    @GetMapping("{userId}")
+    public ResponseEntity<UserDto> getUser(@PathVariable int userId){
+        return  new ResponseEntity<UserDto>(userServiceImpl.getUserById(userId), HttpStatus.OK);
+    }
+
     @GetMapping("/{userId}/followed/list")
     public ResponseEntity<UserDto> getUserFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "") String order) {
         return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId, order), HttpStatus.OK);
+    }
+    @PostMapping()
+    public ResponseEntity<String> createUser(@RequestBody UserToCreateDto userToCreateDto) {
+        userServiceImpl.createUser(userToCreateDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Created: Usuario creado exitosamente.");
+
     }
 
     @PostMapping("/{userId}/follow/{userIdToFollow}")

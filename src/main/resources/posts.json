@@ -1,0 +1,36 @@
+[
+  {
+    "userId": 1,
+    "id": 32,
+    "date": "01-05-2025",
+    "product": {
+      "id": 62,
+      "name": "Headset RGB Inalámbrico",
+      "type": "Gamer",
+      "brand": "Razer",
+      "color": "Green with RGB",
+      "notes": "Sin Batería"
+    },
+    "category": 120,
+    "price": 2800.69,
+    "hasPromo": true,
+    "discount": 2800.69
+    },
+  {
+    "userId": 1,
+    "id": 18,
+    "date": "29-04-2021",
+    "product": {
+      "id": 1,
+      "name": "Silla Gamer",
+      "type": "Gamer",
+      "brand": "Racer",
+      "color": "Red & Black",
+      "notes": "Special Edition"
+    },
+    "category": 100,
+    "price": 15000.50,
+    "hasPromo": true,
+    "discount": 2800.69
+  }
+]

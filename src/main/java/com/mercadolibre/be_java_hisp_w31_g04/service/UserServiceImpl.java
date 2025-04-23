@@ -2,6 +2,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.service;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
@@ -98,6 +99,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+<<<<<<< HEAD
     public void removeUserById(Integer userId) {
         User user = userRepositoryImpl.getById(userId)
                 .orElseThrow(() -> new NotFoundException("No se encontró ningun usuario"));
@@ -107,5 +109,22 @@ public class UserServiceImpl implements IUserService {
 
     }
 
+=======
+    public UserDto getUserById(Integer userId) {
+       User user =  userRepositoryImpl.getById(userId)
+               .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
+>>>>>>> origin/develop
 
+        return UserMapper.toUserDto(user);
+    }
+
+    @Override
+    public void createUser(UserToCreateDto dtoUser) {
+        if(dtoUser.getName().length()>=20){
+            throw new BadRequestException("el nombre no puede tener mas de 20 caracteres");
+        }else if(dtoUser.getName().isEmpty()){
+            throw new BadRequestException("el nombre no puede estar vacio");
+        }
+        userRepositoryImpl.saveUser(new User(userRepositoryImpl.getUserId(),dtoUser.getName(),new ArrayList<>(),new ArrayList<>()));
+    }
 }
