@@ -98,17 +98,20 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public UserDto getUserById(Integer userId) {
+       User user =  userRepositoryImpl.getById(userId)
+               .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
+
+        return UserMapper.toUserDto(user);
+    }
+
+    @Override
     public void createUser(UserToCreateDto dtoUser) {
         if(dtoUser.getName().length()>=20){
             throw new BadRequestException("el nombre no puede tener mas de 20 caracteres");
         }else if(dtoUser.getName().isEmpty()){
             throw new BadRequestException("el nombre no puede estar vacio");
         }
-
         userRepositoryImpl.saveUser(new User(userRepositoryImpl.getUserId(),dtoUser.getName(),new ArrayList<>(),new ArrayList<>()));
-
-
     }
-
-
 }

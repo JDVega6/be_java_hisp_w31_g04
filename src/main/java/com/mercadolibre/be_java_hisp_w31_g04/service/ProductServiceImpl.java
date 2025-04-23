@@ -34,6 +34,10 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public void createPostProduct(PostProductDto postProduct) {
+
+        userRepositoryImpl.getById(postProduct.getUser_id())
+                .orElseThrow(() -> new NotFoundException("No se encontró un usuario con ese ID"));
+
         if (postProduct.getId() == 0 || postProduct.getProduct().getId() == 0){
             throw new BadRequestException("Se debe ingresar el id del post y del producto");
         }

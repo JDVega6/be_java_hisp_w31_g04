@@ -19,6 +19,11 @@ public class UserController {
         this.userServiceImpl = userServiceImpl;
     }
 
+    @GetMapping("{userId}")
+    public ResponseEntity<UserDto> getUser(@PathVariable int userId){
+        return  new ResponseEntity<UserDto>(userServiceImpl.getUserById(userId), HttpStatus.OK);
+    }
+
     @GetMapping("/{userId}/followed/list")
     public ResponseEntity<UserDto> getUserFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "") String order) {
         return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId,order), HttpStatus.OK);
