@@ -89,7 +89,6 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     public void saveUser(User user) {
         listOfUsers.add(user);
-        System.out.println(listOfUsers);
 
     }
 
