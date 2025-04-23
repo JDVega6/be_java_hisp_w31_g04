@@ -32,9 +32,49 @@ public class ProductRepositoryImpl implements IProductRepository {
 
         listOfPosts.add(Post.builder()
                 .userId(2)
-                .id(2)
+                .id(1)
                 .date(LocalDate.of(2025,5,1))
                 .product(p1)
+                .category(100)
+                .price(25.37)
+                .hasPromo(true)
+                .discount(63.9)
+                .build());
+
+        Product p2 = Product.builder()
+                .id(2)
+                .name("Pc Gamer")
+                .type("Game")
+                .brand("HP")
+                .color("Blue")
+                .notes("NA")
+                .build();
+
+        listOfPosts.add(Post.builder()
+                .userId(2)
+                .id(2)
+                .date(LocalDate.of(2025,5,2))
+                .product(p2)
+                .category(100)
+                .price(25.37)
+                .hasPromo(true)
+                .discount(63.9)
+                .build());
+
+        Product p3 = Product.builder()
+                .id(2)
+                .name("Pc Gamer")
+                .type("Game")
+                .brand("HP")
+                .color("Blue")
+                .notes("NA")
+                .build();
+
+        listOfPosts.add(Post.builder()
+                .userId(2)
+                .id(3)
+                .date(LocalDate.of(2025,5,3))
+                .product(p3)
                 .category(100)
                 .price(25.37)
                 .hasPromo(true)

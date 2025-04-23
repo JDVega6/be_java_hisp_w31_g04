@@ -17,6 +17,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.util.ProductMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -124,8 +125,22 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public FollowedPostsResponseDto getFollowedPostsResponse(int userId) {
+    public FollowedPostsResponseDto getFollowedPostsResponse(int userId, String order) {
         List<PostProductDto> posts = getFollowedPosts(userId);
+
+        if(!order.isEmpty())
+        {
+            switch (order) {
+                case "date_asc":
+                    posts.sort(Comparator.comparing(PostProductDto::getDate));
+                    break;
+                case "date_desc":
+                    posts.sort(Comparator.comparing(PostProductDto::getDate).reversed());
+                    break;
+                default:
+                    throw new BadRequestException("Parámetro 'order' inválido. Usa 'date_asc' o 'date_desc'.");
+            }
+        }
 
         FollowedPostsResponseDto response = new FollowedPostsResponseDto();
         response.setUserId(userId);
