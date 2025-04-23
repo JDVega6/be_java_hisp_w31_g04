@@ -3,6 +3,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.repository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
+import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import org.springframework.stereotype.Repository;
@@ -46,10 +47,8 @@ public class UserRepositoryImpl implements IUserRepository {
         //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
         user.getFollowing().remove(Integer.valueOf(toUnfollow.getId()));
         toUnfollow.getFollowedBy().remove(Integer.valueOf(user.getId()));
-        System.out.println(listOfUsers);
     }
     public void addFollowById(Integer userId, Integer userIdToFollow) {
-        //
         listOfUsers.stream()
                 .filter(u -> u.getId() == userId).findFirst()
                 .ifPresent(user -> {
@@ -70,20 +69,26 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public void orderUsers(List<User> user, String order) {
-        if(order.equals("name_asc")) {
+        if (!order.isEmpty()) {
+
+
+        if (order.equals("name_asc")) {
             user.sort(new Comparator<User>() {
                 public int compare(User obj1, User obj2) {
                     return obj1.getName().compareTo(obj2.getName());
                 }
             });
         }
-        if(order.equals("name_desc")) {
+        else if (order.equals("name_desc")) {
             user.sort(new Comparator<User>() {
                 public int compare(User obj2, User obj1) {
                     return obj1.getName().compareTo(obj2.getName());
                 }
             });
+        }else{
+            throw new BadRequestException("Parámetro 'order' inválido. Usa 'name_asc' o 'name_desc'.");
         }
+    }
     }
 
     @Override
