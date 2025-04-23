@@ -7,14 +7,29 @@ import com.mercadolibre.be_java_hisp_w31_g04.model.Post;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
 
 public class ProductMapper {
-    public static Post toPost(PostProductDto postProduct, Product product) {
 
+    public static Post toPost(PostProductDto postProduct, Product product) {
         return Post.builder()
                 .userId(postProduct.getUser_id())
                 .date(postProduct.getDate())
                 .category(postProduct.getCategory())
                 .price(postProduct.getPrice())
                 .product(product)
+                .hasPromo(false)
+                .build();
+
+    }
+
+    public static Post toPost(PostPromoProductDto postPromoProduct, Product product) {
+
+        return Post.builder()
+                .userId(postPromoProduct.getUser_id())
+                .date(postPromoProduct.getDate())
+                .category(postPromoProduct.getCategory())
+                .price(postPromoProduct.getPrice())
+                .product(product)
+                .hasPromo(postPromoProduct.getHasPromo())
+                .discount(postPromoProduct.getDiscount())
                 .build();
 
     }

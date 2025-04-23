@@ -1,18 +1,15 @@
 package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowedPostsResponseDto;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.PostPromoProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostByUserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
-import com.mercadolibre.be_java_hisp_w31_g04.service.ProductServiceImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -39,6 +36,13 @@ public class ProductController {
     public ResponseEntity<PromoPostByUserDto> GetPromoPostByUser(@RequestParam Integer user_id) {
         return new ResponseEntity<PromoPostByUserDto>(productService.GetPromoPostByUser(user_id), HttpStatus.OK);
     }
+
+    @PostMapping("/promo-post")
+    public ResponseEntity<?> CreatePostPromoProduct(@RequestBody PostPromoProductDto postPromoProductDto) {
+        productService.createPostProduct(postPromoProductDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Created: Post del producto en promoción creado exitosamente.");
+    }
+
 
     @GetMapping("/followed/{userId}/list")
     public ResponseEntity<FollowedPostsResponseDto> getFollowePosts(@PathVariable int userId){
