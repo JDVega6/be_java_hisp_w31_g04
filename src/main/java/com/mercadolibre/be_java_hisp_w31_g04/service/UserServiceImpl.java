@@ -96,5 +96,11 @@ public class UserServiceImpl implements IUserService {
         return UserMapper.toUserWithFollowersDto(user, followedByDto);
     }
 
+    @Override
+    public UserDto getUserById(Integer userId) {
+       User user =  userRepositoryImpl.getById(userId)
+               .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
 
+        return UserMapper.toUserDto(user);
+    }
 }
