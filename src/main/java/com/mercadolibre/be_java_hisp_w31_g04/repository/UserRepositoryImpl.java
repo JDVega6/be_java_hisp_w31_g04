@@ -103,5 +103,8 @@ public class UserRepositoryImpl implements IUserRepository {
         return userId;
     }
 
-
+    @Override
+    public void deleteUserById(Integer userId) {
+        listOfUsers.removeIf(u -> u.getId()==userId);
+    }
 }

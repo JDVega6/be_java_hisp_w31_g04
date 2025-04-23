@@ -122,6 +122,14 @@ public class ProductRepositoryImpl implements IProductRepository {
                 .sorted(Comparator.comparing(Post::getDate).reversed())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deletePostByUserId(int userId) {
+        listOfPosts.stream().filter(post -> post.getUserId() == userId)
+                            .forEach(post -> listOfProducts.remove(post.getProduct()));
+
+        listOfPosts.removeIf(post -> post.getUserId() == userId);
+    }
 }
 
 

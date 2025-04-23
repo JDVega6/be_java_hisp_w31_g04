@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     IUserService userServiceImpl;
-    public UserController(UserServiceImpl userServiceImpl){
+
+    public UserController( IUserService userServiceImpl) {
         this.userServiceImpl = userServiceImpl;
     }
 
@@ -26,7 +27,7 @@ public class UserController {
 
     @GetMapping("/{userId}/followed/list")
     public ResponseEntity<UserDto> getUserFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "") String order) {
-        return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId,order), HttpStatus.OK);
+        return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId, order), HttpStatus.OK);
     }
     @PostMapping()
     public ResponseEntity<String> createUser(@RequestBody UserToCreateDto userToCreateDto) {
@@ -36,14 +37,13 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/follow/{userIdToFollow}")
-    public ResponseEntity<?> createFollow(@PathVariable Integer userId,  @PathVariable Integer userIdToFollow){
+    public ResponseEntity<?> createFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
         userServiceImpl.addFollowById(userId, userIdToFollow);
         return new ResponseEntity<>("Follow creado con éxito", HttpStatus.OK);
     }
 
-
     @GetMapping("/{userId}/followers/count")
-    public ResponseEntity<FollowersCountDto> getUserFollowersCount(@PathVariable Integer userId){
+    public ResponseEntity<FollowersCountDto> getUserFollowersCount(@PathVariable Integer userId) {
         return new ResponseEntity<>(userServiceImpl.getUserFollowersCount(userId), HttpStatus.OK);
     }
 
@@ -54,7 +54,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followers/list")
-    public ResponseEntity<UserWithFollowersDto> getUserFollowers(@PathVariable int userId, @RequestParam(defaultValue = "") String order){
-        return new ResponseEntity<>(userServiceImpl.getUserWithFollowed(userId,order), HttpStatus.OK);
+    public ResponseEntity<UserWithFollowersDto> getUserFollowers(@PathVariable int userId, @RequestParam(defaultValue = "") String order) {
+        return new ResponseEntity<>(userServiceImpl.getUserWithFollowed(userId, order), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> removeUser(@PathVariable Integer userId) {
+        userServiceImpl.removeUserById(userId);
+        return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado correctamente.");
     }
 }
