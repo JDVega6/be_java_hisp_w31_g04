@@ -23,7 +23,7 @@ public class UserController {
     public ResponseEntity<UserDto> getUserFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "") String order) {
         return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId,order), HttpStatus.OK);
     }
-    @PostMapping("/post")
+    @PostMapping()
     public ResponseEntity<String> createUser(@RequestBody UserToCreateDto userToCreateDto) {
         userServiceImpl.createUser(userToCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Created: Usuario creado exitosamente.");
