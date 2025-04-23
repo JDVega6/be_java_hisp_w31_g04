@@ -99,7 +99,6 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-<<<<<<< HEAD
     public void removeUserById(Integer userId) {
         User user = userRepositoryImpl.getById(userId)
                 .orElseThrow(() -> new NotFoundException("No se encontró ningun usuario"));
@@ -109,11 +108,10 @@ public class UserServiceImpl implements IUserService {
 
     }
 
-=======
+    @Override
     public UserDto getUserById(Integer userId) {
        User user =  userRepositoryImpl.getById(userId)
                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
->>>>>>> origin/develop
 
         return UserMapper.toUserDto(user);
     }
