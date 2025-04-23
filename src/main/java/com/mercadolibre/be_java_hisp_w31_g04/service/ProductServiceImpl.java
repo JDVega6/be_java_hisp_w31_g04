@@ -1,5 +1,6 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service;
 
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowedPostsResponseDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostPromoProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostByUserDto;
@@ -14,6 +15,10 @@ import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
 import com.mercadolibre.be_java_hisp_w31_g04.util.ProductMapper;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements IProductService {
@@ -95,5 +100,37 @@ public class ProductServiceImpl implements IProductService {
                 .posts(productRepositoryImpl.getPromoPostByUser(userId).stream().map(ProductMapper::toPostPromoDto).toList())
                 .build();
 
+    }
+
+    @Override
+    public List<PostProductDto> getFollowedPosts(int userId){
+        if ( userId <= 0 ){
+            throw new BadRequestException("Debe ingresar un id valido");
+        }
+
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+
+        List<Integer> sellerIds = user.getFollowing();
+        if (sellerIds.isEmpty()) {
+            throw new BadRequestException("El usuario seleccionado no posee ningun vendedor con post recientes");
+        }
+
+        LocalDate fromDate = LocalDate.now().minusWeeks(2);
+
+        List<Post> posts = productRepositoryImpl.findPostsBySellerIdsSince(sellerIds,fromDate);
+
+        return posts.stream().map(ProductMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public FollowedPostsResponseDto getFollowedPostsResponse(int userId) {
+        List<PostProductDto> posts = getFollowedPosts(userId);
+
+        FollowedPostsResponseDto response = new FollowedPostsResponseDto();
+        response.setUserId(userId);
+        response.setPosts(posts);
+
+        return response;
     }
 }
