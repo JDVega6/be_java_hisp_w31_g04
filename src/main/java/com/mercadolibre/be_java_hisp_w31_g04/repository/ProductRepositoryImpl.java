@@ -1,9 +1,17 @@
 package com.mercadolibre.be_java_hisp_w31_g04.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Post;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
+import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IProductRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ResourceUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,70 +24,33 @@ public class ProductRepositoryImpl implements IProductRepository {
     private List<Product> listOfProducts = new ArrayList<>();
     private List<Post> listOfPosts = new ArrayList<>();
 
-    public ProductRepositoryImpl(){
-        setListOfPostsMannually();
+    public ProductRepositoryImpl() throws IOException {
+        loadDataBaseProducts();
+        loadDataBasePost();
     }
 
-    public void setListOfPostsMannually(){
-        Product p1 = Product.builder()
-                .id(2)
-                .name("Pc Gamer")
-                .type("Game")
-                .brand("HP")
-                .color("Blue")
-                .notes("NA")
-                .build();
+    private void loadDataBaseProducts() throws IOException {
+        File file;
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Product> products ;
 
-        listOfPosts.add(Post.builder()
-                .userId(2)
-                .id(1)
-                .date(LocalDate.of(2025,5,1))
-                .product(p1)
-                .category(100)
-                .price(25.37)
-                .hasPromo(true)
-                .discount(63.9)
-                .build());
+        file= ResourceUtils.getFile("classpath:products.json");
+        products= objectMapper.readValue(file,new TypeReference<List<Product>>(){});
 
-        Product p2 = Product.builder()
-                .id(2)
-                .name("Pc Gamer")
-                .type("Game")
-                .brand("HP")
-                .color("Blue")
-                .notes("NA")
-                .build();
+        listOfProducts = products;
+    }
 
-        listOfPosts.add(Post.builder()
-                .userId(2)
-                .id(2)
-                .date(LocalDate.of(2025,5,2))
-                .product(p2)
-                .category(100)
-                .price(25.37)
-                .hasPromo(true)
-                .discount(63.9)
-                .build());
 
-        Product p3 = Product.builder()
-                .id(2)
-                .name("Pc Gamer")
-                .type("Game")
-                .brand("HP")
-                .color("Blue")
-                .notes("NA")
-                .build();
+    private void loadDataBasePost() throws IOException {
+        File file;
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        List<Post> posts ;
 
-        listOfPosts.add(Post.builder()
-                .userId(2)
-                .id(3)
-                .date(LocalDate.of(2025,5,3))
-                .product(p3)
-                .category(100)
-                .price(25.37)
-                .hasPromo(true)
-                .discount(63.9)
-                .build());
+        file= ResourceUtils.getFile("classpath:posts.json");
+        posts= objectMapper.readValue(file,new TypeReference<List<Post>>(){});
+
+        listOfPosts = posts;
     }
 
     @Override
@@ -121,6 +92,11 @@ public class ProductRepositoryImpl implements IProductRepository {
                 .filter(post -> !post.getDate().isBefore(fromDate))
                 .sorted(Comparator.comparing(Post::getDate).reversed())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Post getPostById(int id) {
+        return listOfPosts.stream().filter(post -> post.getId() == id).findFirst().orElse(null);
     }
 
     @Override

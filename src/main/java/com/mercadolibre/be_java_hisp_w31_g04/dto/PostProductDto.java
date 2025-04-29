@@ -16,6 +16,4 @@ public class PostProductDto {
     private ProductDto product;
     private int category;
     private double price;
-
-
 }

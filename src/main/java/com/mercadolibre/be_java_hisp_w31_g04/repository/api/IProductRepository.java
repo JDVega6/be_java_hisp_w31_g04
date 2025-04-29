@@ -15,4 +15,6 @@ public interface IProductRepository {
     List<Post> getPromoPostByUser(int userId);
     void deletePostByUserId(int userId);
     List<Post> findPostsBySellerIdsSince(List<Integer> sellerIds, LocalDate fromDate);
+
+    Post getPostById(int id);
 }
