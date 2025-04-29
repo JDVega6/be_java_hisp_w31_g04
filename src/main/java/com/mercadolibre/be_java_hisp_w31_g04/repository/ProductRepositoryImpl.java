@@ -54,11 +54,6 @@ public class ProductRepositoryImpl implements IProductRepository {
     }
 
     @Override
-    public boolean existsProduct(int id) {
-        return listOfProducts.stream().anyMatch(product -> product.getId() == id);
-    }
-
-    @Override
     public void savePost(Post postProduct) {
         listOfPosts.add(postProduct);
     }
@@ -66,6 +61,11 @@ public class ProductRepositoryImpl implements IProductRepository {
     @Override
     public void saveProduct(Product product) {
         listOfProducts.add(product);
+    }
+
+    @Override
+    public boolean existsProduct(int id) {
+        return listOfProducts.stream().anyMatch(product -> product.getId() == id);
     }
 
     @Override
