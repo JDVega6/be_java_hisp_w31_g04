@@ -78,57 +78,6 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public PromoPostDto getPromoPostCountByUserId(int userId) {
-
-        User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
-
-        int countProductsPromo  = productRepositoryImpl.countPromoPostByUserId(userId);
-
-        return PromoPostDto.builder()
-                .userId(userId)
-                .userName(user.getName())
-                .promoProductsCount(countProductsPromo)
-                .build();
-
-    }
-
-    @Override
-    public PromoPostByUserDto GetPromoPostByUser(int userId) {
-        User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
-
-
-        return PromoPostByUserDto.builder()
-                .userId(userId)
-                .userName(user.getName())
-                .posts(productRepositoryImpl.getPromoPostByUser(userId).stream().map(ProductMapper::toPostPromoDto).toList())
-                .build();
-
-    }
-
-    @Override
-    public List<PostProductDto> getFollowedPosts(int userId){
-        if ( userId <= 0 ){
-            throw new BadRequestException("Debe ingresar un id valido");
-        }
-
-        User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
-
-        List<Integer> sellerIds = user.getFollowing();
-        if (sellerIds.isEmpty()) {
-            throw new BadRequestException("El usuario seleccionado no posee ningun vendedor con post recientes");
-        }
-
-        LocalDate fromDate = LocalDate.now().minusWeeks(2);
-
-        List<Post> posts = productRepositoryImpl.findPostsBySellerIdsSince(sellerIds,fromDate);
-
-        return posts.stream().map(ProductMapper::toDto).collect(Collectors.toList());
-    }
-
-    @Override
     public FollowedPostsResponseDto getFollowedPostsResponse(int userId, String order) {
         List<PostProductDto> posts = getFollowedPosts(userId);
 
@@ -152,4 +101,59 @@ public class ProductServiceImpl implements IProductService {
 
         return response;
     }
+
+    @Override
+    public PromoPostByUserDto GetPromoPostByUser(int userId) {
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+
+
+        return PromoPostByUserDto.builder()
+                .userId(userId)
+                .userName(user.getName())
+                .posts(productRepositoryImpl.getPromoPostByUser(userId).stream().map(ProductMapper::toPostPromoDto).toList())
+                .build();
+
+    }
+
+    @Override
+    public PromoPostDto getPromoPostCountByUserId(int userId) {
+
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+
+        int countProductsPromo  = productRepositoryImpl.countPromoPostByUserId(userId);
+
+        return PromoPostDto.builder()
+                .userId(userId)
+                .userName(user.getName())
+                .promoProductsCount(countProductsPromo)
+                .build();
+
+    }
+
+
+
+    @Override
+    public List<PostProductDto> getFollowedPosts(int userId){
+        if ( userId <= 0 ){
+            throw new BadRequestException("Debe ingresar un id valido");
+        }
+
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+
+        List<Integer> sellerIds = user.getFollowing();
+        if (sellerIds.isEmpty()) {
+            throw new BadRequestException("El usuario seleccionado no posee ningun vendedor con post recientes");
+        }
+
+        LocalDate fromDate = LocalDate.now().minusWeeks(2);
+
+        List<Post> posts = productRepositoryImpl.findPostsBySellerIdsSince(sellerIds,fromDate);
+
+        return posts.stream().map(ProductMapper::toDto).collect(Collectors.toList());
+    }
+
+
 }
