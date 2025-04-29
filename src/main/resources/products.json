@@ -5,9 +5,7 @@
     "type": "Electrónica",
     "brand": "Samsung",
     "color": "Negro",
-    "notes": "Modelo de gama media",
-    "hasPromo": true,
-    "discount": 10.0
+    "notes": "Modelo de gama media"
   },
   {
     "id": 2,
@@ -15,9 +13,7 @@
     "type": "Electrónica",
     "brand": "Asus",
     "color": "Gris",
-    "notes": "Incluye tarjeta RTX 3070",
-    "hasPromo": false,
-    "discount": 0.0
+    "notes": "Incluye tarjeta RTX 3070"
   },
   {
     "id": 3,
@@ -25,9 +21,7 @@
     "type": "Ropa",
     "brand": "H&M",
     "color": "Blanco",
-    "notes": "100% algodón",
-    "hasPromo": true,
-    "discount": 5.0
+    "notes": "100% algodón"
   },
   {
     "id": 4,
@@ -35,9 +29,7 @@
     "type": "Calzado",
     "brand": "Nike",
     "color": "Azul",
-    "notes": "Diseño liviano",
-    "hasPromo": false,
-    "discount": 0.0
+    "notes": "Diseño liviano"
   },
   {
     "id": 5,
@@ -45,9 +37,7 @@
     "type": "Electrónica",
     "brand": "Sony",
     "color": "Negro",
-    "notes": "Cancelación de ruido",
-    "hasPromo": true,
-    "discount": 15.0
+    "notes": "Cancelación de ruido"
   },
   {
     "id": 6,
@@ -55,9 +45,7 @@
     "type": "Libros",
     "brand": "Penguin",
     "color": "N/A",
-    "notes": "Éxito de ventas",
-    "hasPromo": true,
-    "discount": 8.0
+    "notes": "Éxito de ventas"
   },
   {
     "id": 7,
@@ -65,9 +53,7 @@
     "type": "Electrónica",
     "brand": "Garmin",
     "color": "Verde",
-    "notes": "GPS y monitor de ritmo cardíaco",
-    "hasPromo": false,
-    "discount": 0.0
+    "notes": "GPS y monitor de ritmo cardíaco"
   },
   {
     "id": 8,
@@ -75,9 +61,7 @@
     "type": "Ropa",
     "brand": "The North Face",
     "color": "Rojo",
-    "notes": "Impermeable y térmica",
-    "hasPromo": true,
-    "discount": 20.0
+    "notes": "Impermeable y térmica"
   },
   {
     "id": 9,
@@ -85,9 +69,7 @@
     "type": "Accesorios",
     "brand": "Logitech",
     "color": "Negro",
-    "notes": "Diseño ergonómico",
-    "hasPromo": false,
-    "discount": 0.0
+    "notes": "Diseño ergonómico"
   },
   {
     "id": 10,
@@ -95,8 +77,6 @@
     "type": "Electrodomésticos",
     "brand": "Philips",
     "color": "Plateado",
-    "notes": "Incluye filtro reutilizable",
-    "hasPromo": true,
-    "discount": 12.0
+    "notes": "Incluye filtro reutilizable"
   }
 ]
