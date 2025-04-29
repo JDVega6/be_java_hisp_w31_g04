@@ -20,6 +20,18 @@ public class UserController {
         this.userServiceImpl = userServiceImpl;
     }
 
+    @PostMapping("/{userId}/follow/{userIdToFollow}")
+    public ResponseEntity<?> createFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
+        userServiceImpl.addFollowById(userId, userIdToFollow);
+        return new ResponseEntity<>("Follow creado con éxito", HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<String> createUser(@RequestBody UserToCreateDto userToCreateDto) {
+        userServiceImpl.createUser(userToCreateDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Created: Usuario creado exitosamente.");
+    }
+
     @GetMapping("{userId}")
     public ResponseEntity<UserDto> getUser(@PathVariable int userId){
         return  new ResponseEntity<UserDto>(userServiceImpl.getUserById(userId), HttpStatus.OK);
@@ -29,17 +41,10 @@ public class UserController {
     public ResponseEntity<UserDto> getUserFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "") String order) {
         return new ResponseEntity<>(userServiceImpl.getUserFollowed(userId, order), HttpStatus.OK);
     }
-    @PostMapping()
-    public ResponseEntity<String> createUser(@RequestBody UserToCreateDto userToCreateDto) {
-        userServiceImpl.createUser(userToCreateDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Created: Usuario creado exitosamente.");
 
-    }
-
-    @PostMapping("/{userId}/follow/{userIdToFollow}")
-    public ResponseEntity<?> createFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
-        userServiceImpl.addFollowById(userId, userIdToFollow);
-        return new ResponseEntity<>("Follow creado con éxito", HttpStatus.OK);
+    @GetMapping("/{userId}/followers/list")
+    public ResponseEntity<UserWithFollowersDto> getUserFollowers(@PathVariable int userId, @RequestParam(defaultValue = "") String order) {
+        return new ResponseEntity<>(userServiceImpl.getUserWithFollowed(userId, order), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/followers/count")
@@ -51,11 +56,6 @@ public class UserController {
     public ResponseEntity<?> deleteFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
         userServiceImpl.removeFollowById(userId, userIdToUnfollow);
         return new ResponseEntity<>("Unfollow realizado con éxito", HttpStatus.OK);
-    }
-
-    @GetMapping("/{userId}/followers/list")
-    public ResponseEntity<UserWithFollowersDto> getUserFollowers(@PathVariable int userId, @RequestParam(defaultValue = "") String order) {
-        return new ResponseEntity<>(userServiceImpl.getUserWithFollowed(userId, order), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
