@@ -7,7 +7,6 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
-import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IProductRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
@@ -70,7 +69,7 @@ public class UserServiceImpl implements IUserService {
         List<UserDto> followed=new ArrayList<>();
         List<User> users= new ArrayList<>(user.getFollowing().stream().map(u->userRepositoryImpl.getById(u).get()).toList());
         userRepositoryImpl.orderUsers(users, order);
-        users.forEach(user1->{followed.add(UserMapper.toUserDto(user1));});
+        users.forEach(user1-> followed.add(UserMapper.toUserDto(user1)) );
 
 
 
@@ -99,7 +98,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void removeFollowById(Integer userId, Integer userIdToUnfollow) {
+    public UserWithFollowersDto removeFollowById(Integer userId, Integer userIdToUnfollow) {
         if (userId.equals(userIdToUnfollow)){
             throw new BadRequestException("No es posible generar esta acción");
         }
@@ -113,12 +112,17 @@ public class UserServiceImpl implements IUserService {
             throw new BadRequestException("No sigues a este usuario");
         }
 
-        userRepositoryImpl.deleteFollowById(user, toUnfollow);
+        User updatedUser = userRepositoryImpl.deleteFollowById(user, toUnfollow);
+        List<User> following = new ArrayList<>(user.getFollowing().stream()
+                .map(u -> userRepositoryImpl.getById(u).get()).toList());
+        List<UserDto>followingDto = following.stream().map(UserMapper::toUserDto).toList();
+
+        return UserMapper.toUserWithFollowersDto(updatedUser, followingDto);
     }
 
     @Override
     public void removeUserById(Integer userId) {
-        User user = userRepositoryImpl.getById(userId)
+        userRepositoryImpl.getById(userId)
                 .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
 
         productRepositoryImpl.deletePostByUserId(userId);
