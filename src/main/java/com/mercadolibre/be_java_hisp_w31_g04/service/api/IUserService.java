@@ -9,7 +9,7 @@ public interface IUserService {
 
     FollowersCountDto getUserFollowersCount(Integer userId);
 
-    void removeFollowById(Integer userId, Integer userIdToUnfollow);
+    UserWithFollowersDto removeFollow(Integer userId, Integer userIdToUnfollow);
 
     UserWithFollowersDto getUserWithFollowed(Integer userId, String order);
 

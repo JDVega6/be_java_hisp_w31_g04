@@ -2,7 +2,6 @@ package com.mercadolibre.be_java_hisp_w31_g04.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
@@ -98,10 +97,16 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public void deleteFollowById(User user, User toUnfollow) {
+    public User removeFromFollowing(User user, User toUnfollow) {
         //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
         user.getFollowing().remove(Integer.valueOf(toUnfollow.getId()));
-        toUnfollow.getFollowedBy().remove(Integer.valueOf(user.getId()));
+        return user;
+    }
+
+    @Override
+    public void removeFromFollowedBy(User user, User userWhoUnfollowed) {
+        //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
+        user.getFollowedBy().remove(Integer.valueOf(userWhoUnfollowed.getId()));
     }
 
     @Override

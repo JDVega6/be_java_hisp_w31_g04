@@ -4,7 +4,6 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
-import com.mercadolibre.be_java_hisp_w31_g04.service.UserServiceImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/follow/{userIdToFollow}")
-    public ResponseEntity<?> createFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
+    public ResponseEntity<String> createFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
         userServiceImpl.addFollowById(userId, userIdToFollow);
         return new ResponseEntity<>("Follow creado con éxito", HttpStatus.OK);
     }
@@ -34,7 +33,7 @@ public class UserController {
 
     @GetMapping("{userId}")
     public ResponseEntity<UserDto> getUser(@PathVariable int userId){
-        return  new ResponseEntity<UserDto>(userServiceImpl.getUserById(userId), HttpStatus.OK);
+        return  new ResponseEntity<>(userServiceImpl.getUserById(userId), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/followed/list")
@@ -53,13 +52,12 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/unfollow/{userIdToUnfollow}")
-    public ResponseEntity<?> deleteFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
-        userServiceImpl.removeFollowById(userId, userIdToUnfollow);
-        return new ResponseEntity<>("Unfollow realizado con éxito", HttpStatus.OK);
+    public ResponseEntity<UserWithFollowersDto> removeFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
+        return new ResponseEntity<>(userServiceImpl.removeFollow(userId, userIdToUnfollow), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> removeUser(@PathVariable Integer userId) {
+    public ResponseEntity<String> removeUser(@PathVariable Integer userId) {
         userServiceImpl.removeUserById(userId);
         return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado correctamente.");
     }
