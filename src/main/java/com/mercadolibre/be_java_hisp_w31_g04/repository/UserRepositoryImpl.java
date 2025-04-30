@@ -2,6 +2,7 @@ package com.mercadolibre.be_java_hisp_w31_g04.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
@@ -34,25 +35,6 @@ public class UserRepositoryImpl implements IUserRepository {
         users= objectMapper.readValue(file,new TypeReference<List<User>>(){});
 
         listOfUsers = users;
-    }
-
-    public void addFollowById(Integer userId, Integer userIdToFollow) {
-        listOfUsers.stream()
-                .filter(u -> u.getId() == userId).findFirst()
-                .ifPresent(user -> {
-                    if(!user.getFollowing().contains(userIdToFollow)){
-                        user.getFollowing().add(userIdToFollow);
-                    }
-                });
-
-        listOfUsers.stream()
-                .filter(u -> u.getId() == userIdToFollow)
-                .findFirst()
-                .ifPresent(followee -> {
-                    if (!followee.getFollowedBy().contains(userId)) {
-                        followee.getFollowedBy().add(userId);
-                    }
-                });
     }
 
     @Override
@@ -107,6 +89,19 @@ public class UserRepositoryImpl implements IUserRepository {
     public void removeFromFollowedBy(User user, User userWhoUnfollowed) {
         //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
         user.getFollowedBy().remove(Integer.valueOf(userWhoUnfollowed.getId()));
+    }
+
+    public User updateFollowByUserId(User following, User followedBy) {
+
+        if (!following.getFollowing().contains(followedBy.getId())) {
+            following.getFollowing().add(followedBy.getId());
+        }
+
+        if (!followedBy.getFollowedBy().contains(following.getId())) {
+            followedBy.getFollowedBy().add(following.getId());
+        }
+
+        return following;
     }
 
     @Override

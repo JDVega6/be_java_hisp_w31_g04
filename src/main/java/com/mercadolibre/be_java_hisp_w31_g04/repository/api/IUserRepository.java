@@ -1,5 +1,6 @@
 package com.mercadolibre.be_java_hisp_w31_g04.repository.api;
 
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public interface IUserRepository {
     Optional<User> getById(Integer userId);
     User removeFromFollowing(User user, User toUnfollow);
     void removeFromFollowedBy(User user, User userWhoUnfollowed);
-    void addFollowById(Integer userId, Integer userIdToFollow);
+    User updateFollowByUserId(User following, User followedBy);
     void orderUsers(List<User> user, String order);
     void saveUser(User user);
     int getUserId();

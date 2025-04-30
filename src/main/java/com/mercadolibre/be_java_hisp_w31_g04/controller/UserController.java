@@ -19,12 +19,6 @@ public class UserController {
         this.userServiceImpl = userServiceImpl;
     }
 
-    @PostMapping("/{userId}/follow/{userIdToFollow}")
-    public ResponseEntity<String> createFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
-        userServiceImpl.addFollowById(userId, userIdToFollow);
-        return new ResponseEntity<>("Follow creado con éxito", HttpStatus.OK);
-    }
-
     @PostMapping()
     public ResponseEntity<String> createUser(@RequestBody UserToCreateDto userToCreateDto) {
         userServiceImpl.createUser(userToCreateDto);
@@ -54,6 +48,11 @@ public class UserController {
     @PutMapping("/{userId}/unfollow/{userIdToUnfollow}")
     public ResponseEntity<UserWithFollowersDto> removeFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
         return new ResponseEntity<>(userServiceImpl.removeFollow(userId, userIdToUnfollow), HttpStatus.OK);
+    }
+
+    @PutMapping("/{userId}/follow/{userIdToFollow}")
+    public ResponseEntity<UserWithFollowersDto> updateFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
+        return new ResponseEntity<>(userServiceImpl.updateFollowByUserId(userId, userIdToFollow), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
