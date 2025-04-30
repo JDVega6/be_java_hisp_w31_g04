@@ -1,7 +1,5 @@
 package com.mercadolibre.be_java_hisp_w31_g04.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,11 +13,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Post {
 
-    private int userId;
-    private int id;
+    private Integer userId;
+    private Integer id;
     private LocalDate date;
     private Product product;
-    private int category;
+    private Integer category;
     private Double price;
     private Boolean hasPromo;
     private Double discount;

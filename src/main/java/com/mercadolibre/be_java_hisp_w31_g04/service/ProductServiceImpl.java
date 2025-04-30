@@ -35,12 +35,8 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public void createPostProduct(PostProductDto postProduct) {
 
-        userRepositoryImpl.getById(postProduct.getUser_id())
+        userRepositoryImpl.getById(postProduct.getUserId())
                 .orElseThrow(() -> new NotFoundException("No se encontró un usuario con ese ID"));
-
-        if (postProduct.getProduct().getId() == 0){
-            throw new BadRequestException("Se debe ingresar el id  del producto");
-        }
 
         Product product = ProductMapper.toProduct(postProduct.getProduct());
         boolean existProduct = productRepositoryImpl.existsProduct(product.getId());
@@ -55,7 +51,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public void createPostProduct(PostPromoProductDto postPromoProduct) {
-        userRepositoryImpl.getById(postPromoProduct.getUser_id())
+        userRepositoryImpl.getById(postPromoProduct.getUserId())
                 .orElseThrow(() -> new NotFoundException("No se encontró un usuario con ese ID"));
 
         if (postPromoProduct.getProduct().getId() == 0){

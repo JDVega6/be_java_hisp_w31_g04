@@ -6,9 +6,9 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.PostPromoProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostByUserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PromoPostDto;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,13 +22,13 @@ public class ProductController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> postPostProduct(@Validated @RequestBody PostProductDto PostProduct) {
-        productService.createPostProduct(PostProduct);
+    public ResponseEntity<String> postPostProduct(@Valid @RequestBody PostProductDto postProduct) {
+        productService.createPostProduct(postProduct);
         return ResponseEntity.status(HttpStatus.CREATED).body("Post del producto creado exitosamente.");
     }
 
     @PostMapping("/promo-post")
-    public ResponseEntity<?> createPostPromoProduct(@RequestBody PostPromoProductDto postPromoProductDto) {
+    public ResponseEntity<String> createPostPromoProduct(@RequestBody PostPromoProductDto postPromoProductDto) {
         productService.createPostProduct(postPromoProductDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Post del producto en promoción creado exitosamente.");
     }
