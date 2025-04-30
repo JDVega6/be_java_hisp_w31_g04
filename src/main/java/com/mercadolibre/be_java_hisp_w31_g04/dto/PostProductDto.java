@@ -10,8 +10,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostProductDto {
-    private int id;
     private int user_id;
+    private int id;
     private LocalDate date;
     private ProductDto product;
     private int category;
