@@ -13,5 +13,8 @@ public interface IProductRepository {
     void saveProduct(Product product);
     int countPromoPostByUserId(int userId);
     List<Post> getPromoPostByUser(int userId);
+    void deletePostByUserId(int userId);
     List<Post> findPostsBySellerIdsSince(List<Integer> sellerIds, LocalDate fromDate);
+
+    Post getPostById(int id);
 }

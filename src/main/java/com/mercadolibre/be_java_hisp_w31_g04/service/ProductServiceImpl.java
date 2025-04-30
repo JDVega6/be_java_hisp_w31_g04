@@ -34,8 +34,16 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public void createPostProduct(PostProductDto postProduct) {
+
+        userRepositoryImpl.getById(postProduct.getUser_id())
+                .orElseThrow(() -> new NotFoundException("No se encontró un usuario con ese ID"));
+
         if (postProduct.getId() == 0 || postProduct.getProduct().getId() == 0){
             throw new BadRequestException("Se debe ingresar el id del post y del producto");
+        }
+
+        if (productRepositoryImpl.getPostById(postProduct.getId()) != null) {
+            throw new BadRequestException("El post ya fue creado");
         }
 
         Product product = ProductMapper.toProduct(postProduct.getProduct());
@@ -62,6 +70,10 @@ public class ProductServiceImpl implements IProductService {
             throw  new BadRequestException("No se puede crear un post de un producto en descuento sin descuento");
         }
 
+        if (productRepositoryImpl.getPostById(postPromoProduct.getId()) != null) {
+            throw new BadRequestException("El post ya fue creado");
+        }
+
         Product product = ProductMapper.toProduct(postPromoProduct.getProduct());
         boolean existProduct = productRepositoryImpl.existsProduct(product.getId());
         if(existProduct){
@@ -71,57 +83,6 @@ public class ProductServiceImpl implements IProductService {
         Post post = ProductMapper.toPost(postPromoProduct,product);
         productRepositoryImpl.saveProduct(product);
         productRepositoryImpl.savePost(post);
-    }
-
-    @Override
-    public PromoPostDto getPromoPostCountByUserId(int userId) {
-
-        User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
-
-        int countProductsPromo  = productRepositoryImpl.countPromoPostByUserId(userId);
-
-        return PromoPostDto.builder()
-                .userId(userId)
-                .userName(user.getName())
-                .promoProductsCount(countProductsPromo)
-                .build();
-
-    }
-
-    @Override
-    public PromoPostByUserDto GetPromoPostByUser(int userId) {
-        User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
-
-
-        return PromoPostByUserDto.builder()
-                .userId(userId)
-                .userName(user.getName())
-                .posts(productRepositoryImpl.getPromoPostByUser(userId).stream().map(ProductMapper::toPostPromoDto).toList())
-                .build();
-
-    }
-
-    @Override
-    public List<PostProductDto> getFollowedPosts(int userId){
-        if ( userId <= 0 ){
-            throw new BadRequestException("Debe ingresar un id valido");
-        }
-
-        User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
-
-        List<Integer> sellerIds = user.getFollowing();
-        if (sellerIds.isEmpty()) {
-            throw new BadRequestException("El usuario seleccionado no posee ningun vendedor con post recientes");
-        }
-
-        LocalDate fromDate = LocalDate.now().minusWeeks(2);
-
-        List<Post> posts = productRepositoryImpl.findPostsBySellerIdsSince(sellerIds,fromDate);
-
-        return posts.stream().map(ProductMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -148,4 +109,59 @@ public class ProductServiceImpl implements IProductService {
 
         return response;
     }
+
+    @Override
+    public PromoPostByUserDto GetPromoPostByUser(int userId) {
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+
+
+        return PromoPostByUserDto.builder()
+                .userId(userId)
+                .userName(user.getName())
+                .posts(productRepositoryImpl.getPromoPostByUser(userId).stream().map(ProductMapper::toPostPromoDto).toList())
+                .build();
+
+    }
+
+    @Override
+    public PromoPostDto getPromoPostCountByUserId(int userId) {
+
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+
+        int countProductsPromo  = productRepositoryImpl.countPromoPostByUserId(userId);
+
+        return PromoPostDto.builder()
+                .userId(userId)
+                .userName(user.getName())
+                .promoProductsCount(countProductsPromo)
+                .build();
+
+    }
+
+
+
+    @Override
+    public List<PostProductDto> getFollowedPosts(int userId){
+        if ( userId <= 0 ){
+            throw new BadRequestException("Debe ingresar un id valido");
+        }
+
+        User user = userRepositoryImpl.getById(userId)
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+
+        List<Integer> sellerIds = user.getFollowing();
+        if (sellerIds.isEmpty()) {
+            throw new BadRequestException("El usuario seleccionado no posee ningun vendedor con post recientes");
+        }
+
+        LocalDate fromDate = LocalDate.now().minusWeeks(2);
+
+        List<Post> posts = productRepositoryImpl.findPostsBySellerIdsSince(sellerIds,fromDate);
+
+        return posts.stream().map(ProductMapper::toDto).collect(Collectors.toList());
+    }
+
+
 }
