@@ -24,13 +24,13 @@ public class ProductController {
     @PostMapping("/post")
     public ResponseEntity<?> postPostProduct(@Validated @RequestBody PostProductDto PostProduct) {
         productService.createPostProduct(PostProduct);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Created: Post del producto creado exitosamente.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Post del producto creado exitosamente.");
     }
 
     @PostMapping("/promo-post")
     public ResponseEntity<?> createPostPromoProduct(@RequestBody PostPromoProductDto postPromoProductDto) {
         productService.createPostProduct(postPromoProductDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Created: Post del producto en promoción creado exitosamente.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Post del producto en promoción creado exitosamente.");
     }
 
     @GetMapping("/followed/{userId}/list")
