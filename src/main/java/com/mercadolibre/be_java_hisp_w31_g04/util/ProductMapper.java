@@ -58,8 +58,8 @@ public class ProductMapper {
     }
 
     public static PostPromoProductDto toPostPromoDto(Post post) {
-        return new PostPromoProductDto( post.getId(),
-                                        post.getUserId(),
+        return new PostPromoProductDto( post.getUserId(),
+                                        post.getId(),
                                         post.getDate(),
                                         toProductDto(post.getProduct()),
                                         post.getCategory(),
