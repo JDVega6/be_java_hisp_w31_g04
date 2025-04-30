@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Repository
@@ -23,6 +25,8 @@ public class ProductRepositoryImpl implements IProductRepository {
 
     private List<Product> listOfProducts = new ArrayList<>();
     private List<Post> listOfPosts = new ArrayList<>();
+
+    private static final AtomicInteger counter = new AtomicInteger();
 
     public ProductRepositoryImpl() throws IOException {
         loadDataBaseProducts();
@@ -55,6 +59,7 @@ public class ProductRepositoryImpl implements IProductRepository {
 
     @Override
     public void savePost(Post postProduct) {
+        postProduct.setId(counter.getAndIncrement());
         listOfPosts.add(postProduct);
     }
 
