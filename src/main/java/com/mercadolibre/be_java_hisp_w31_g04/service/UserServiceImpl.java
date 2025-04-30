@@ -65,7 +65,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserDto getUserFollowed(Integer userId, String order) {
         User user= userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
 
         List<UserDto> followed=new ArrayList<>();
         List<User> users= new ArrayList<>(user.getFollowing().stream().map(u->userRepositoryImpl.getById(u).get()).toList());
@@ -80,7 +80,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserWithFollowersDto getUserWithFollowed(Integer userId, String order) {
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningun usuario"));
+                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
 
         List<User> followedBy = new ArrayList<>(user.getFollowedBy().stream()
                 .map(u -> userRepositoryImpl.getById(u).get()).toList());
@@ -93,7 +93,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public FollowersCountDto getUserFollowersCount(Integer userId) {
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
 
         return UserMapper.toFollowersCountDto(user, user.getFollowedBy().size());
     }
@@ -105,7 +105,7 @@ public class UserServiceImpl implements IUserService {
         }
 
         User user = userRepositoryImpl.getById(userId).
-                orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
+                orElseThrow(()-> new NotFoundException("No se encontro ningun usuario con ese Id"));
         User toUnfollow = userRepositoryImpl.getById(userIdToUnfollow)
                 .orElseThrow(()-> new NotFoundException("Usuario a dejar de seguir no encontrado"));
 
@@ -119,7 +119,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void removeUserById(Integer userId) {
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningun usuario"));
+                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
 
         productRepositoryImpl.deletePostByUserId(userId);
         userRepositoryImpl.deleteUserById(userId);
