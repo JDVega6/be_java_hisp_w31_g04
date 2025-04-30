@@ -97,10 +97,16 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public User deleteFollowById(User user, User toUnfollow) {
+    public User removeFromFollowing(User user, User toUnfollow) {
         //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
         user.getFollowing().remove(Integer.valueOf(toUnfollow.getId()));
-        toUnfollow.getFollowedBy().remove(Integer.valueOf(user.getId()));
+        return user;
+    }
+
+    @Override
+    public User removeFromFollowedBy(User user, User userWhoUnfollowed) {
+        //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
+        user.getFollowedBy().remove(Integer.valueOf(userWhoUnfollowed.getId()));
         return user;
     }
 

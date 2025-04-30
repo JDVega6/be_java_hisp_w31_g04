@@ -52,8 +52,8 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/unfollow/{userIdToUnfollow}")
-    public ResponseEntity<UserWithFollowersDto> deleteFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
-        return new ResponseEntity<>(userServiceImpl.removeFollowById(userId, userIdToUnfollow), HttpStatus.OK);
+    public ResponseEntity<UserWithFollowersDto> removeFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
+        return new ResponseEntity<>(userServiceImpl.removeFollow(userId, userIdToUnfollow), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")

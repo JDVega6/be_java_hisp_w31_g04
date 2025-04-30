@@ -98,7 +98,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserWithFollowersDto removeFollowById(Integer userId, Integer userIdToUnfollow) {
+    public UserWithFollowersDto removeFollow(Integer userId, Integer userIdToUnfollow) {
         if (userId.equals(userIdToUnfollow)){
             throw new BadRequestException("No es posible generar esta acción");
         }
@@ -112,12 +112,14 @@ public class UserServiceImpl implements IUserService {
             throw new BadRequestException("No sigues a este usuario");
         }
 
-        User updatedUser = userRepositoryImpl.deleteFollowById(user, toUnfollow);
-        List<User> following = new ArrayList<>(user.getFollowing().stream()
-                .map(u -> userRepositoryImpl.getById(u).get()).toList());
-        List<UserDto>followingDto = following.stream().map(UserMapper::toUserDto).toList();
+        User updatedUser = userRepositoryImpl.removeFromFollowing(user, toUnfollow);
+        userRepositoryImpl.removeFromFollowedBy(toUnfollow, user);
 
-        return UserMapper.toUserWithFollowersDto(updatedUser, followingDto);
+        List<User> updatedFollowing = new ArrayList<>(user.getFollowing().stream()
+                .map(u -> userRepositoryImpl.getById(u).get()).toList());
+        List<UserDto>updatedFollowingDto = updatedFollowing.stream().map(UserMapper::toUserDto).toList();
+
+        return UserMapper.toUserWithFollowersDto(updatedUser, updatedFollowingDto);
     }
 
     @Override

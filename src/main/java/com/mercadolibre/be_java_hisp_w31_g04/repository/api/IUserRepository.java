@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface IUserRepository {
     Optional<User> getById(Integer userId);
-
-    User deleteFollowById(User user, User toUnfollow);
+    User removeFromFollowing(User user, User toUnfollow);
+    User removeFromFollowedBy(User user, User userWhoUnfollowed);
     void addFollowById(Integer userId, Integer userIdToFollow);
     void orderUsers(List<User> user, String order);
     void saveUser(User user);
