@@ -113,7 +113,7 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public PromoPostByUserDto GetPromoPostByUser(int userId) {
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
 
 
         return PromoPostByUserDto.builder()
@@ -128,7 +128,7 @@ public class ProductServiceImpl implements IProductService {
     public PromoPostDto getPromoPostCountByUserId(int userId) {
 
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontró ningún usuario"));
+                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
 
         int countProductsPromo  = productRepositoryImpl.countPromoPostByUserId(userId);
 
@@ -149,7 +149,7 @@ public class ProductServiceImpl implements IProductService {
         }
 
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
 
         List<Integer> sellerIds = user.getFollowing();
         if (sellerIds.isEmpty()) {
