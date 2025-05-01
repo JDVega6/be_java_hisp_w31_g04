@@ -14,6 +14,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.util.UserMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -26,23 +27,6 @@ public class UserServiceImpl implements IUserService {
     public UserServiceImpl(IUserRepository userRepositoryImpl, IProductRepository productRepositoryImpl) {
         this.userRepositoryImpl = userRepositoryImpl;
         this.productRepositoryImpl = productRepositoryImpl;
-    }
-
-    @Override
-    public void addFollowById(Integer userId, Integer userIdToFollow) {
-
-        if(userId.equals(userIdToFollow)){
-            throw new BadRequestException("No es posible generar esta acción");
-        }
-
-        User user = userRepositoryImpl.getById(userId).orElseThrow(()-> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        userRepositoryImpl.getById(userIdToFollow).orElseThrow(()-> new NotFoundException("Usuario a seguir no encontrado"));
-
-        if(user.getFollowing().contains(userIdToFollow)){
-            throw new BadRequestException("Ya sigues a este usuario");
-        }
-
-        userRepositoryImpl.addFollowById(userId, userIdToFollow);
     }
 
     @Override
@@ -133,5 +117,31 @@ public class UserServiceImpl implements IUserService {
         userRepositoryImpl.deleteUserById(userId);
 
     }
+
+    @Override
+    public UserWithFollowersDto updateFollowByUserId(Integer userId, Integer userIdToFollow) {
+
+        if(userId.equals(userIdToFollow)){
+            throw new BadRequestException("No es posible generar esta acción");
+        }
+
+        User user = userRepositoryImpl.getById(userId).orElseThrow(()-> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+        User toFollowedBy = userRepositoryImpl.getById(userIdToFollow).orElseThrow(()-> new NotFoundException("El usuario a seguir no existe"));
+
+        if(user.getFollowing().contains(userIdToFollow)){
+            throw new BadRequestException("Ya sigues a este usuario");
+        }
+
+        User followingUpdated = userRepositoryImpl.updateFollowByUserId(user, toFollowedBy);
+
+        List<UserDto> followers = followingUpdated.getFollowing().stream()
+                .map(f -> userRepositoryImpl.getById(f)
+                        .map(UserMapper::toUserDto)
+                        .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE)))
+                .toList();
+
+        return UserMapper.toUserWithFollowersDto(followingUpdated, followers);
+    }
+
 
 }
