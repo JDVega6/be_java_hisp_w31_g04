@@ -22,7 +22,7 @@ public class ProductController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<String> postPostProduct(@Valid @RequestBody PostProductDto postProduct) {
+    public ResponseEntity<String> createPostProduct(@Valid @RequestBody PostProductDto postProduct) {
         productService.createPostProduct(postProduct);
         return ResponseEntity.status(HttpStatus.CREATED).body("Post del producto creado exitosamente.");
     }
@@ -34,10 +34,10 @@ public class ProductController {
     }
 
     @GetMapping("/followed/{userId}/list")
-    public ResponseEntity<FollowedPostsResponseDto> getFollowePosts(
+    public ResponseEntity<FollowedPostsResponseDto> getFollowedPostsFromTwoWeeks(
             @PathVariable Integer userId,
             @RequestParam(required = false, defaultValue = "") String order){
-        return new ResponseEntity<>(productService.getFollowedPostsResponse(userId, order), HttpStatus.OK);
+        return new ResponseEntity<>(productService.getFollowedPostsFromTwoWeeks(userId, order), HttpStatus.OK);
     }
 
     @GetMapping("/promo-post/list")

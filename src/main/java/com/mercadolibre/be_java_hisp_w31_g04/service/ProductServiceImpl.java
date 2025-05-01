@@ -54,10 +54,6 @@ public class ProductServiceImpl implements IProductService {
         userRepositoryImpl.getById(postPromoProduct.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
-        if (postPromoProduct.getProduct().getId() == 0){
-            throw new BadRequestException("Se debe ingresar el id  del producto");
-        }
-
         Product product = ProductMapper.toProduct(postPromoProduct.getProduct());
         boolean existProduct = productRepositoryImpl.existsProduct(product.getId());
         if(existProduct){
@@ -70,17 +66,17 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public FollowedPostsResponseDto getFollowedPostsResponse(Integer userId, String order) {
-        List<PostProductDto> posts = getFollowedPosts(userId);
+    public FollowedPostsResponseDto getFollowedPostsFromTwoWeeks(Integer userId, String order) {
+        List<PostProductDto> postsFromTwoWeeks = getFollowedPosts(userId);
 
         if(!order.isEmpty())
         {
             switch (order) {
                 case "date_asc":
-                    posts.sort(Comparator.comparing(PostProductDto::getDate));
+                    postsFromTwoWeeks.sort(Comparator.comparing(PostProductDto::getDate));
                     break;
                 case "date_desc":
-                    posts.sort(Comparator.comparing(PostProductDto::getDate).reversed());
+                    postsFromTwoWeeks.sort(Comparator.comparing(PostProductDto::getDate).reversed());
                     break;
                 default:
                     throw new BadRequestException("Parámetro 'order' inválido. Usa 'date_asc' o 'date_desc'.");
@@ -89,7 +85,7 @@ public class ProductServiceImpl implements IProductService {
 
         FollowedPostsResponseDto response = new FollowedPostsResponseDto();
         response.setUserId(userId);
-        response.setPosts(posts);
+        response.setPosts(postsFromTwoWeeks);
 
         return response;
     }
@@ -124,8 +120,6 @@ public class ProductServiceImpl implements IProductService {
 
     }
 
-
-
     @Override
     public List<PostProductDto> getFollowedPosts(Integer userId){
         if ( userId <= 0 ){
@@ -137,7 +131,7 @@ public class ProductServiceImpl implements IProductService {
 
         List<Integer> sellerIds = user.getFollowing();
         if (sellerIds.isEmpty()) {
-            throw new BadRequestException("El usuario seleccionado no posee ningun vendedor con post recientes");
+            throw new BadRequestException("El usuario indicado no sigue a ningún vendedor");
         }
 
         LocalDate fromDate = LocalDate.now().minusWeeks(2);
@@ -146,6 +140,5 @@ public class ProductServiceImpl implements IProductService {
 
         return new ArrayList<>(posts.stream().map(ProductMapper::toDto).toList());
     }
-
 
 }

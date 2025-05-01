@@ -21,9 +21,8 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> createUser(@Valid @RequestBody UserToCreateDto userToCreateDto) {
-        userServiceImpl.createUser(userToCreateDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Created: Usuario creado exitosamente.");
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserToCreateDto userToCreateDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userServiceImpl.createUser(userToCreateDto));
     }
 
     @GetMapping("{userId}")
@@ -57,8 +56,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> removeUser(@PathVariable Integer userId) {
+    public ResponseEntity<Void> removeUser(@PathVariable Integer userId) {
         userServiceImpl.removeUserById(userId);
-        return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado correctamente.");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

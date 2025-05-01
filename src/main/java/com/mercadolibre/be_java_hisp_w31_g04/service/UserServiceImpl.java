@@ -27,13 +27,10 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void createUser(UserToCreateDto dtoUser) {
-        if(dtoUser.getName().length()>=20){
-            throw new BadRequestException("El nombre no puede tener mas de 20 caracteres");
-        }else if(dtoUser.getName().isEmpty()){
-            throw new BadRequestException("El nombre no puede estar vacío");
-        }
-        userRepositoryImpl.saveUser(new User(userRepositoryImpl.getUserId(),dtoUser.getName(),new ArrayList<>(),new ArrayList<>()));
+    public UserDto createUser(UserToCreateDto dtoUser) {
+        User user = new User(userRepositoryImpl.getUserId(), dtoUser.getName(), new ArrayList<>(), new ArrayList<>());
+        userRepositoryImpl.saveUser(user);
+        return new UserDto(user.getId(), user.getName());
     }
 
     @Override

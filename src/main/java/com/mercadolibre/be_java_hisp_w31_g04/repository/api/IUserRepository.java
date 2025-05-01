@@ -13,6 +13,5 @@ public interface IUserRepository {
     void orderUsers(List<User> user, String order);
     void saveUser(User user);
     int getUserId();
-
     void deleteUserById(Integer userId);
 }

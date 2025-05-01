@@ -14,7 +14,9 @@ public interface IUserService {
     UserWithFollowersDto getUserWithFollowed(Integer userId, String order);
 
     void removeUserById(Integer userId);
+
     UserDto getUserById(Integer userId);
-    void createUser(UserToCreateDto dtoUser);
+
+    UserDto createUser(UserToCreateDto dtoUser);
 
 }
