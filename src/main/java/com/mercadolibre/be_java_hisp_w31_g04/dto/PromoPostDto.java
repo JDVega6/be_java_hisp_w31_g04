@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class PromoPostDto {
-    private int userId;
+    private Integer userId;
     private String userName;
     private int promoProductsCount;
 }

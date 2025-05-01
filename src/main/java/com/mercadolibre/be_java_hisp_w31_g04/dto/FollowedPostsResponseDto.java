@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class FollowedPostsResponseDto {
-    private int userId;
+    private Integer userId;
     private List<PostProductDto> posts;
 }

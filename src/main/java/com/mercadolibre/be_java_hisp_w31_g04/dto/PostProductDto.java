@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostProductDto {
+
     @JsonProperty("user_id")
     @NotNull(message = "El  id no puede estar vacío.")
     @Positive(message = "El id debe ser mayor a cero.")

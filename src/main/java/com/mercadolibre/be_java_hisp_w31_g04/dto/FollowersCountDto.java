@@ -8,9 +8,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class FollowersCountDto {
     @JsonProperty("user_id")
-    private int userId;
+    private Integer userId;
     @JsonProperty("user_name")
     private String userName;
     @JsonProperty("followers_count")
-    private int followersCount;
+    private Integer followersCount;
 }

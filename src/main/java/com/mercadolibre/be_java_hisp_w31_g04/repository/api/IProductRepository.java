@@ -8,12 +8,12 @@ import java.util.List;
 import java.time.LocalDate;
 
 public interface IProductRepository {
-    boolean existsProduct(int id);
+    boolean existsProduct(Integer id);
     void savePost(Post postProduct);
     void saveProduct(Product product);
-    int countPromoPostByUserId(int userId);
-    List<Post> getPromoPostByUser(int userId);
-    void deletePostByUserId(int userId);
+    int countPromoPostByUserId(Integer userId);
+    List<Post> getPromoPostByUser(Integer userId);
+    void deletePostByUserId(Integer userId);
     List<Post> findPostsBySellerIdsSince(List<Integer> sellerIds, LocalDate fromDate);
 
     Post getPostById(int id);

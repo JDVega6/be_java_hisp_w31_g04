@@ -13,8 +13,8 @@ public class PostPromoProductDto extends PostProductDto{
     Boolean hasPromo;
     Double discount;
 
-    public PostPromoProductDto(int user_id, int id, LocalDate date, ProductDto product, int category, double price,Boolean hasPromo, Double discount) {
-        super(user_id,id,date,product,category,price);
+    public PostPromoProductDto(Integer userId, Integer id, LocalDate date, ProductDto product, Integer category, Double price,Boolean hasPromo, Double discount) {
+        super(userId, id, date, product, category, price);
         this.hasPromo = hasPromo;
         this.discount = discount;
     }

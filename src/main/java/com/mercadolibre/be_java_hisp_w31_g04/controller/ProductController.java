@@ -28,26 +28,26 @@ public class ProductController {
     }
 
     @PostMapping("/promo-post")
-    public ResponseEntity<String> createPostPromoProduct(@RequestBody PostPromoProductDto postPromoProductDto) {
+    public ResponseEntity<String> createPostPromoProduct(@Valid @RequestBody PostPromoProductDto postPromoProductDto) {
         productService.createPostProduct(postPromoProductDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Post del producto en promoción creado exitosamente.");
     }
 
     @GetMapping("/followed/{userId}/list")
     public ResponseEntity<FollowedPostsResponseDto> getFollowePosts(
-            @PathVariable int userId,
+            @PathVariable Integer userId,
             @RequestParam(required = false, defaultValue = "") String order){
-        return new ResponseEntity<FollowedPostsResponseDto>(productService.getFollowedPostsResponse(userId, order), HttpStatus.OK);
+        return new ResponseEntity<>(productService.getFollowedPostsResponse(userId, order), HttpStatus.OK);
     }
 
     @GetMapping("/promo-post/list")
-    public ResponseEntity<PromoPostByUserDto> getPromoPostByUser(@RequestParam Integer user_id) {
-        return new ResponseEntity<PromoPostByUserDto>(productService.GetPromoPostByUser(user_id), HttpStatus.OK);
+    public ResponseEntity<PromoPostByUserDto> getPromoPostByUser(@RequestParam(name = "user_id") Integer userId) {
+        return new ResponseEntity<>(productService.getPromoPostByUser(userId), HttpStatus.OK);
     }
 
     @GetMapping("/promo-post/count")
-    public ResponseEntity<PromoPostDto> getPromoPostCount(@RequestParam Integer user_id) {
-        return new ResponseEntity<PromoPostDto>(productService.getPromoPostCountByUserId(user_id), HttpStatus.OK);
+    public ResponseEntity<PromoPostDto> getPromoPostCount(@RequestParam(name = "user_id") Integer userId) {
+        return new ResponseEntity<>(productService.getPromoPostCountByUserId(userId), HttpStatus.OK);
     }
 
 }

@@ -11,8 +11,8 @@ import java.util.List;
 public interface IProductService {
     void createPostProduct(PostProductDto postProduct);
     void createPostProduct(PostPromoProductDto postPromoProduct);
-    PromoPostDto getPromoPostCountByUserId(int userId);
-    PromoPostByUserDto GetPromoPostByUser(int userId);
-    List<PostProductDto> getFollowedPosts(int userId);
-    FollowedPostsResponseDto getFollowedPostsResponse(int userId, String order);
+    PromoPostDto getPromoPostCountByUserId(Integer userId);
+    PromoPostByUserDto getPromoPostByUser(Integer userId);
+    List<PostProductDto> getFollowedPosts(Integer userId);
+    FollowedPostsResponseDto getFollowedPostsResponse(Integer userId, String order);
 }

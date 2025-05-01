@@ -8,6 +8,9 @@ import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import java.util.List;
 
 public class UserMapper {
+
+    private UserMapper() {}
+
     public static UserDto toUserDto(User user) {
         return new UserDto(user.getId(), user.getName());
     }
