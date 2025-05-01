@@ -5,6 +5,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> createUser(@RequestBody UserToCreateDto userToCreateDto) {
+    public ResponseEntity<String> createUser(@Valid @RequestBody UserToCreateDto userToCreateDto) {
         userServiceImpl.createUser(userToCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Created: Usuario creado exitosamente.");
     }

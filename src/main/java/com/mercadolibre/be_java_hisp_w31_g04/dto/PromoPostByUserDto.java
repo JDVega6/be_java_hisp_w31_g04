@@ -11,7 +11,9 @@ import java.util.List;
 public class PromoPostByUserDto {
     @JsonProperty("user_id")
     private Integer userId;
+
     @JsonProperty("user_name")
     private String userName;
+
     private List<PostPromoProductDto> posts;
 }

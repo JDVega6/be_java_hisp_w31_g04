@@ -60,10 +60,6 @@ public class ProductServiceImpl implements IProductService {
             throw new BadRequestException("Se debe ingresar el id  del producto");
         }
 
-        if (!postPromoProduct.getHasPromo() || postPromoProduct.getDiscount().equals(0.0)) {
-            throw  new BadRequestException("No se puede crear un post de un producto en descuento sin descuento");
-        }
-
         Product product = ProductMapper.toProduct(postPromoProduct.getProduct());
         boolean existProduct = productRepositoryImpl.existsProduct(product.getId());
         if(existProduct){
