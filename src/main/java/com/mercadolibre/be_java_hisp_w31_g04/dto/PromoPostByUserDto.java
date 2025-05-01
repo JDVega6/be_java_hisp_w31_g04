@@ -10,8 +10,10 @@ import java.util.List;
 @Builder
 public class PromoPostByUserDto {
     @JsonProperty("user_id")
-    private int userId;
+    private Integer userId;
+
     @JsonProperty("user_name")
     private String userName;
+
     private List<PostPromoProductDto> posts;
 }

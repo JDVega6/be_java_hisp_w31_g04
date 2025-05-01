@@ -8,10 +8,12 @@ import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
 
 public class ProductMapper {
 
+    private ProductMapper() {}
+
     public static Post toPost(PostProductDto postProduct, Product product) {
         return Post.builder()
                 .id(postProduct.getId())
-                .userId(postProduct.getUser_id())
+                .userId(postProduct.getUserId())
                 .date(postProduct.getDate())
                 .category(postProduct.getCategory())
                 .price(postProduct.getPrice())
@@ -25,7 +27,7 @@ public class ProductMapper {
 
         return Post.builder()
                 .id(postPromoProduct.getId())
-                .userId(postPromoProduct.getUser_id())
+                .userId(postPromoProduct.getUserId())
                 .date(postPromoProduct.getDate())
                 .category(postPromoProduct.getCategory())
                 .price(postPromoProduct.getPrice())
@@ -83,7 +85,7 @@ public class ProductMapper {
 
         PostProductDto dto = new PostProductDto();
         dto.setId(post.getId());
-        dto.setUser_id(post.getUserId());
+        dto.setUserId(post.getUserId());
         dto.setDate(post.getDate());
         dto.setProduct(pdto);
         dto.setCategory(post.getCategory());

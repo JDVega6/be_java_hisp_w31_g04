@@ -1,6 +1,5 @@
 package com.mercadolibre.be_java_hisp_w31_g04.repository.api;
 
-import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 
 import java.util.List;

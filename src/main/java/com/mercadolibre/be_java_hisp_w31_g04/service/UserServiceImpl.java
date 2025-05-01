@@ -14,7 +14,6 @@ import com.mercadolibre.be_java_hisp_w31_g04.util.UserMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements IUserService {

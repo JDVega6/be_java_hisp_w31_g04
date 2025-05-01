@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Post;
 import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
-import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IProductRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
@@ -17,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 @Repository
 public class ProductRepositoryImpl implements IProductRepository {
@@ -59,7 +56,7 @@ public class ProductRepositoryImpl implements IProductRepository {
 
     @Override
     public void savePost(Post postProduct) {
-        postProduct.setId(counter.getAndIncrement());
+        postProduct.setId(counter.incrementAndGet());
         listOfPosts.add(postProduct);
     }
 
@@ -69,23 +66,21 @@ public class ProductRepositoryImpl implements IProductRepository {
     }
 
     @Override
-    public boolean existsProduct(int id) {
+    public boolean existsProduct(Integer id) {
         return listOfProducts.stream().anyMatch(product -> product.getId() == id);
     }
 
     @Override
-    public int countPromoPostByUserId(int userId) {
+    public int countPromoPostByUserId(Integer userId) {
 
-        int countProductsPromo = Math.toIntExact( listOfPosts.stream()
+        return Math.toIntExact( listOfPosts.stream()
                                 .filter(post -> post.getUserId() == userId)
                                 .filter(Post::getHasPromo)
                                 .count());
-
-        return countProductsPromo;
     }
 
     @Override
-    public List<Post> getPromoPostByUser(int userId) {
+    public List<Post> getPromoPostByUser(Integer userId) {
         return listOfPosts.stream().filter(post -> post.getUserId() == userId && post.getHasPromo()).toList();
     }
     @Override
@@ -96,7 +91,7 @@ public class ProductRepositoryImpl implements IProductRepository {
                 .filter(post -> sellerIds.contains(post.getUserId()))
                 .filter(post -> !post.getDate().isBefore(fromDate))
                 .sorted(Comparator.comparing(Post::getDate).reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -105,7 +100,7 @@ public class ProductRepositoryImpl implements IProductRepository {
     }
 
     @Override
-    public void deletePostByUserId(int userId) {
+    public void deletePostByUserId(Integer userId) {
         listOfPosts.stream().filter(post -> post.getUserId() == userId)
                             .forEach(post -> listOfProducts.remove(post.getProduct()));
 

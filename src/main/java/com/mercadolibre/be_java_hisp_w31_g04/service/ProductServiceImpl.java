@@ -17,15 +17,17 @@ import com.mercadolibre.be_java_hisp_w31_g04.util.ProductMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements IProductService {
 
     IProductRepository productRepositoryImpl;
     IUserRepository userRepositoryImpl;
+
+    private static final String USER_NOT_FOUND_MESSAGE = "No se encontró ningún usuario con ese ID";
 
     public ProductServiceImpl(IProductRepository productRepositoryImpl, IUserRepository userRepositoryImpl) {
         this.productRepositoryImpl = productRepositoryImpl;
@@ -35,12 +37,8 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public void createPostProduct(PostProductDto postProduct) {
 
-        userRepositoryImpl.getById(postProduct.getUser_id())
-                .orElseThrow(() -> new NotFoundException("No se encontró un usuario con ese ID"));
-
-        if (postProduct.getProduct().getId() == 0){
-            throw new BadRequestException("Se debe ingresar el id  del producto");
-        }
+        userRepositoryImpl.getById(postProduct.getUserId())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
 
         Product product = ProductMapper.toProduct(postProduct.getProduct());
         boolean existProduct = productRepositoryImpl.existsProduct(product.getId());
@@ -55,15 +53,11 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public void createPostProduct(PostPromoProductDto postPromoProduct) {
-        userRepositoryImpl.getById(postPromoProduct.getUser_id())
-                .orElseThrow(() -> new NotFoundException("No se encontró un usuario con ese ID"));
+        userRepositoryImpl.getById(postPromoProduct.getUserId())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
 
         if (postPromoProduct.getProduct().getId() == 0){
             throw new BadRequestException("Se debe ingresar el id  del producto");
-        }
-
-        if (!postPromoProduct.getHasPromo() || postPromoProduct.getDiscount().equals(0.0)) {
-            throw  new BadRequestException("No se puede crear un post de un producto en descuento sin descuento");
         }
 
         Product product = ProductMapper.toProduct(postPromoProduct.getProduct());
@@ -78,7 +72,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public FollowedPostsResponseDto getFollowedPostsResponse(int userId, String order) {
+    public FollowedPostsResponseDto getFollowedPostsResponse(Integer userId, String order) {
         List<PostProductDto> posts = getFollowedPosts(userId);
 
         if(!order.isEmpty())
@@ -103,9 +97,9 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public PromoPostByUserDto GetPromoPostByUser(int userId) {
+    public PromoPostByUserDto getPromoPostByUser(Integer userId) {
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
 
 
         return PromoPostByUserDto.builder()
@@ -117,10 +111,10 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public PromoPostDto getPromoPostCountByUserId(int userId) {
+    public PromoPostDto getPromoPostCountByUserId(Integer userId) {
 
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
 
         int countProductsPromo  = productRepositoryImpl.countPromoPostByUserId(userId);
 
@@ -135,13 +129,13 @@ public class ProductServiceImpl implements IProductService {
 
 
     @Override
-    public List<PostProductDto> getFollowedPosts(int userId){
+    public List<PostProductDto> getFollowedPosts(Integer userId){
         if ( userId <= 0 ){
             throw new BadRequestException("Debe ingresar un id valido");
         }
 
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException("No se encontro ningun usuario con ese Id"));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
 
         List<Integer> sellerIds = user.getFollowing();
         if (sellerIds.isEmpty()) {
@@ -152,7 +146,7 @@ public class ProductServiceImpl implements IProductService {
 
         List<Post> posts = productRepositoryImpl.findPostsBySellerIdsSince(sellerIds,fromDate);
 
-        return posts.stream().map(ProductMapper::toDto).collect(Collectors.toList());
+        return new ArrayList<>(posts.stream().map(ProductMapper::toDto).toList());
     }
 
 
