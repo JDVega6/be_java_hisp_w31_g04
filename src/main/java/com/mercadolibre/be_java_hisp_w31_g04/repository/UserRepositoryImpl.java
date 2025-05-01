@@ -10,10 +10,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
@@ -44,7 +41,7 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public Optional<User> getById(Integer userId) {
-        return listOfUsers.stream().filter(u->u.getId()==userId).findFirst();
+        return listOfUsers.stream().filter(u -> Objects.equals(u.getId(), userId)).findFirst();
     }
 
     @Override
@@ -79,32 +76,30 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public User removeFromFollowing(User user, User toUnfollow) {
-        //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
-        user.getFollowing().remove(Integer.valueOf(toUnfollow.getId()));
+        user.getFollowing().remove(toUnfollow.getId());
         return user;
     }
 
     @Override
     public void removeFromFollowedBy(User user, User userWhoUnfollowed) {
-        //Parse to Integer is used to enable the remove by Object implementation and to not remove by index
-        user.getFollowedBy().remove(Integer.valueOf(userWhoUnfollowed.getId()));
+        user.getFollowedBy().remove(userWhoUnfollowed.getId());
     }
 
-    public User updateFollowByUserId(User following, User followedBy) {
+    public User updateFollowByUserId(User userFollowing, User userToFollow) {
 
-        if (!following.getFollowing().contains(followedBy.getId())) {
-            following.getFollowing().add(followedBy.getId());
+        if (!userFollowing.getFollowing().contains(userToFollow.getId())) {
+            userFollowing.getFollowing().add(userToFollow.getId());
         }
 
-        if (!followedBy.getFollowedBy().contains(following.getId())) {
-            followedBy.getFollowedBy().add(following.getId());
+        if (!userFollowing.getFollowedBy().contains(userToFollow.getId())) {
+            userFollowing.getFollowedBy().add(userToFollow.getId());
         }
 
-        return following;
+        return userFollowing;
     }
 
     @Override
     public void deleteUserById(Integer userId) {
-        listOfUsers.removeIf(u -> u.getId()==userId);
+        listOfUsers.removeIf(u -> Objects.equals(u.getId(), userId));
     }
 }

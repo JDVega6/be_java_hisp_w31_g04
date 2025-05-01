@@ -47,12 +47,12 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/unfollow/{userIdToUnfollow}")
-    public ResponseEntity<UserWithFollowersDto> removeFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
+    public ResponseEntity<UserDto> removeFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
         return new ResponseEntity<>(userServiceImpl.removeFollow(userId, userIdToUnfollow), HttpStatus.OK);
     }
 
     @PutMapping("/{userId}/follow/{userIdToFollow}")
-    public ResponseEntity<UserWithFollowersDto> updateFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
+    public ResponseEntity<UserDto> updateFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
         return new ResponseEntity<>(userServiceImpl.updateFollowByUserId(userId, userIdToFollow), HttpStatus.OK);
     }
 
