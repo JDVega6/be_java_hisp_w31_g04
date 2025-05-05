@@ -1,8 +1,9 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
-import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
+import com.mercadolibre.be_java_hisp_w31_g04.exception.UserNotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
@@ -34,6 +35,26 @@ class UserServiceImplTest {
 
     @Test
     void createUser() {
+        // Arrange
+        User userEmpty=CustomFactory.getUserEmpty();
+        UserDto expected= CustomFactory.getUserDtoThree();
+        UserToCreateDto payload= CustomFactory.getUserToCreate();
+
+
+        // Act
+        doAnswer(invocation -> {
+            User userArg = invocation.getArgument(0);
+            userArg.setId(3);
+            return null;
+        }).when(userRepository).saveUser(userEmpty);
+        UserDto response=userService.createUser(payload);
+
+        // Assert
+        verify(userRepository).saveUser(any(User.class));
+        assertEquals(expected.getUserId(),response.getUserId());
+
+
+
     }
 
     @Test
@@ -81,7 +102,7 @@ class UserServiceImplTest {
         when(userRepository.getById(id)).thenReturn(userEmpty);
 
         // Act and Assert
-        assertThrows(NotFoundException.class,()->userService.getUserFollowed(id, order));
+        assertThrows(UserNotFoundException.class,()->userService.getUserFollowed(id, order));
     }
 
     @Test

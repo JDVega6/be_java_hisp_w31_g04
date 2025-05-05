@@ -2,9 +2,11 @@ package com.mercadolibre.be_java_hisp_w31_g04.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class UserToCreateDto {
     @NotBlank(message = "El nombre no puede estar vacío.")
     @Size(max = 15, message = "La longitud del nombre no puede superar los 15 carácteres.")
