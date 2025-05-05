@@ -28,7 +28,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDto createUser(UserToCreateDto dtoUser) {
-        User user = new User(userRepositoryImpl.getUserId(), dtoUser.getName(), new ArrayList<>(), new ArrayList<>());
+        User user = new User(null, dtoUser.getName(), new ArrayList<>(), new ArrayList<>());
         userRepositoryImpl.saveUser(user);
         return new UserDto(user.getId(), user.getName());
     }

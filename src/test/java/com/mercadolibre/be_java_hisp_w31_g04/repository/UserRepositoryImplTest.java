@@ -24,6 +24,16 @@ class UserRepositoryImplTest {
 
     @Test
     void saveUser() {
+        // Arrange
+        User user= CustomFactory.getUserEmpty();
+        Integer expected=1;
+
+        // Act
+        userRepository.saveUser(user);
+
+        // Assert
+        assertEquals(expected,user.getId());
+        userRepository.deleteUserById(1);
     }
 
     @Test
@@ -42,6 +52,14 @@ class UserRepositoryImplTest {
 
     @Test
     void getUserId() {
+        // Arrange
+        int expected=1;
+
+        // Act
+        int id=userRepository.getUserId();
+        
+        // Assert
+        assertEquals(expected,id);
     }
 
     @Test

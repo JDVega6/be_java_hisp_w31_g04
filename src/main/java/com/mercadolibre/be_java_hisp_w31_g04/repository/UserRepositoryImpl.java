@@ -35,6 +35,7 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public void saveUser(User user) {
+        user.setId(this.getUserId());
         listOfUsers.add(user);
 
     }
