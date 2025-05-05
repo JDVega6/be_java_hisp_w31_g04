@@ -105,7 +105,7 @@ class UserServiceImplTest {
     @Test
     void getUserFollowersCount() {
         // Arrange
-        Integer id = 1;
+        Integer id = 2;
         Optional<User> user = CustomFactory.getOptionalUser();
         FollowersCountDto expected = CustomFactory.getFollowersCountFromOptionalUser();
 
@@ -116,6 +116,17 @@ class UserServiceImplTest {
         // Assert
         verify(userRepository, atLeast(1)).getById(id);
         assertEquals(expected, response);
+    }
+
+    @Test
+    void getUserFollowersCountError() {
+        // Arrange
+        Integer id = 1;
+        Optional<User> user = Optional.empty();
+
+        // Act and Assert
+        when(userRepository.getById(id)).thenReturn(user);
+        assertThrows(UserNotFoundException.class, () -> userService.getUserFollowersCount(id));
     }
 
     @Test
