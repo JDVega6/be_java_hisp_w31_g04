@@ -14,6 +14,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IProductRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.service.api.IProductService;
 import com.mercadolibre.be_java_hisp_w31_g04.util.ProductMapper;
+import org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

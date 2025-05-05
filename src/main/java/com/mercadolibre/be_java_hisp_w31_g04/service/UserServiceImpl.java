@@ -63,12 +63,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserWithFollowersDto getUserWithFollowed(Integer userId, String order) {
+
         User user = userRepositoryImpl.getById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-
         List<User> followedBy = new ArrayList<>(user.getFollowedBy().stream()
                 .map(u -> userRepositoryImpl.getById(u).get()).toList());
-
         userRepositoryImpl.orderUsers(followedBy, order);
         List<UserDto>followedByDto=followedBy.stream().map(UserMapper::toUserDto).toList();
         return UserMapper.toUserWithFollowersDto(user, followedByDto);
