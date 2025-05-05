@@ -46,7 +46,7 @@ class UserControllerTest {
 
     @Test
     void getUserFollowed() {
-        //este
+
     }
 
     @Test
