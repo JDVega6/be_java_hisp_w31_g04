@@ -1,7 +1,6 @@
 package com.mercadolibre.be_java_hisp_w31_g04.util;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 
 import java.util.ArrayList;
@@ -36,6 +35,9 @@ public class CustomFactory {
     public static UserDto getUserDto() {
         List<UserDto> users =new ArrayList<>(List.of(getUserDtoThree(),getUserDtoFour()));
         return new UserDto(2,"Eve",users);
+    }
+    public static User getUserEmpty() {
+        return new User(null,"Eve",null,null);
     }
 
     public static List<User> getUserList() {

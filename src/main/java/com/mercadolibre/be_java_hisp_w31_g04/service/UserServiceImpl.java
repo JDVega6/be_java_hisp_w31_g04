@@ -48,7 +48,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDto getUserFollowed(Integer userId, String order) {
-        //mio
         User user= userRepositoryImpl.getById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
 
