@@ -21,9 +21,8 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> createUser(@Valid @RequestBody UserToCreateDto userToCreateDto) {
-        userServiceImpl.createUser(userToCreateDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Created: Usuario creado exitosamente.");
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserToCreateDto userToCreateDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userServiceImpl.createUser(userToCreateDto));
     }
 
     @GetMapping("{userId}")
@@ -47,18 +46,18 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/unfollow/{userIdToUnfollow}")
-    public ResponseEntity<UserWithFollowersDto> removeFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
+    public ResponseEntity<UserDto> removeFollow(@PathVariable Integer userId, @PathVariable Integer userIdToUnfollow) {
         return new ResponseEntity<>(userServiceImpl.removeFollow(userId, userIdToUnfollow), HttpStatus.OK);
     }
 
     @PutMapping("/{userId}/follow/{userIdToFollow}")
-    public ResponseEntity<UserWithFollowersDto> updateFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
+    public ResponseEntity<UserDto> updateFollow(@PathVariable Integer userId, @PathVariable Integer userIdToFollow) {
         return new ResponseEntity<>(userServiceImpl.updateFollowByUserId(userId, userIdToFollow), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> removeUser(@PathVariable Integer userId) {
+    public ResponseEntity<Void> removeUser(@PathVariable Integer userId) {
         userServiceImpl.removeUserById(userId);
-        return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado correctamente.");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

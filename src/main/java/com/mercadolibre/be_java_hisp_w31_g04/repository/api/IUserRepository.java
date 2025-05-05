@@ -9,10 +9,9 @@ public interface IUserRepository {
     Optional<User> getById(Integer userId);
     User removeFromFollowing(User user, User toUnfollow);
     void removeFromFollowedBy(User user, User userWhoUnfollowed);
-    User updateFollowByUserId(User following, User followedBy);
+    User updateFollowByUserId(User userFollowing, User toFollow);
     void orderUsers(List<User> user, String order);
     void saveUser(User user);
     int getUserId();
-
     void deleteUserById(Integer userId);
 }

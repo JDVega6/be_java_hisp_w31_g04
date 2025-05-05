@@ -5,7 +5,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
-import com.mercadolibre.be_java_hisp_w31_g04.exception.NotFoundException;
+import com.mercadolibre.be_java_hisp_w31_g04.exception.UserNotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IProductRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
@@ -21,27 +21,22 @@ public class UserServiceImpl implements IUserService {
     IUserRepository userRepositoryImpl;
     IProductRepository productRepositoryImpl;
 
-    private static final String USER_NOT_FOUND_MESSAGE = "No se encontró ningún usuario con ese ID";
-
     public UserServiceImpl(IUserRepository userRepositoryImpl, IProductRepository productRepositoryImpl) {
         this.userRepositoryImpl = userRepositoryImpl;
         this.productRepositoryImpl = productRepositoryImpl;
     }
 
     @Override
-    public void createUser(UserToCreateDto dtoUser) {
-        if(dtoUser.getName().length()>=20){
-            throw new BadRequestException("el nombre no puede tener mas de 20 caracteres");
-        }else if(dtoUser.getName().isEmpty()){
-            throw new BadRequestException("el nombre no puede estar vacio");
-        }
-        userRepositoryImpl.saveUser(new User(userRepositoryImpl.getUserId(),dtoUser.getName(),new ArrayList<>(),new ArrayList<>()));
+    public UserDto createUser(UserToCreateDto dtoUser) {
+        User user = new User(userRepositoryImpl.getUserId(), dtoUser.getName(), new ArrayList<>(), new ArrayList<>());
+        userRepositoryImpl.saveUser(user);
+        return new UserDto(user.getId(), user.getName());
     }
 
     @Override
     public UserDto getUserById(Integer userId) {
         User user =  userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
 
         return UserMapper.toUserDto(user);
     }
@@ -49,7 +44,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserDto getUserFollowed(Integer userId, String order) {
         User user= userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
 
         List<UserDto> followed=new ArrayList<>();
         List<User> users= new ArrayList<>(user.getFollowing().stream().map(u->userRepositoryImpl.getById(u).get()).toList());
@@ -65,7 +60,8 @@ public class UserServiceImpl implements IUserService {
     public UserWithFollowersDto getUserWithFollowed(Integer userId, String order) {
 
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
+
         List<User> followedBy = new ArrayList<>(user.getFollowedBy().stream()
                 .map(u -> userRepositoryImpl.getById(u).get()).toList());
         userRepositoryImpl.orderUsers(followedBy, order);
@@ -76,21 +72,21 @@ public class UserServiceImpl implements IUserService {
     @Override
     public FollowersCountDto getUserFollowersCount(Integer userId) {
         User user = userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
 
         return UserMapper.toFollowersCountDto(user, user.getFollowedBy().size());
     }
 
     @Override
-    public UserWithFollowersDto removeFollow(Integer userId, Integer userIdToUnfollow) {
+    public UserDto removeFollow(Integer userId, Integer userIdToUnfollow) {
         if (userId.equals(userIdToUnfollow)){
             throw new BadRequestException("No es posible realizar esta acción");
         }
 
         User user = userRepositoryImpl.getById(userId).
-                orElseThrow(()-> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+                orElseThrow(UserNotFoundException::new);
         User toUnfollow = userRepositoryImpl.getById(userIdToUnfollow)
-                .orElseThrow(()-> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new UserNotFoundException("El usuario a dejar de seguir no existe"));
 
         if (!user.getFollowing().contains(userIdToUnfollow)) {
             throw new BadRequestException("No sigues a este usuario");
@@ -103,13 +99,13 @@ public class UserServiceImpl implements IUserService {
                 .map(u -> userRepositoryImpl.getById(u).get()).toList());
         List<UserDto>updatedFollowingDto = updatedFollowing.stream().map(UserMapper::toUserDto).toList();
 
-        return UserMapper.toUserWithFollowersDto(updatedUser, updatedFollowingDto);
+        return new UserDto(updatedUser.getId(), updatedUser.getName(), updatedFollowingDto);
     }
 
     @Override
     public void removeUserById(Integer userId) {
         userRepositoryImpl.getById(userId)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
 
         productRepositoryImpl.deletePostByUserId(userId);
         userRepositoryImpl.deleteUserById(userId);
@@ -117,28 +113,29 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserWithFollowersDto updateFollowByUserId(Integer userId, Integer userIdToFollow) {
+    public UserDto updateFollowByUserId(Integer userId, Integer userIdToFollow) {
 
         if(userId.equals(userIdToFollow)){
-            throw new BadRequestException("No es posible generar esta acción");
+            throw new BadRequestException("No es posible realizar esta acción");
         }
 
-        User user = userRepositoryImpl.getById(userId).orElseThrow(()-> new NotFoundException(USER_NOT_FOUND_MESSAGE));
-        User toFollowedBy = userRepositoryImpl.getById(userIdToFollow).orElseThrow(()-> new NotFoundException("El usuario a seguir no existe"));
+        User user = userRepositoryImpl.getById(userId).orElseThrow(UserNotFoundException::new);
+        User toFollow = userRepositoryImpl.getById(userIdToFollow)
+                .orElseThrow(()-> new UserNotFoundException("El usuario a seguir no existe"));
 
         if(user.getFollowing().contains(userIdToFollow)){
             throw new BadRequestException("Ya sigues a este usuario");
         }
 
-        User followingUpdated = userRepositoryImpl.updateFollowByUserId(user, toFollowedBy);
+        User userWithFollowingUpdated = userRepositoryImpl.updateFollowByUserId(user, toFollow);
 
-        List<UserDto> followers = followingUpdated.getFollowing().stream()
+        List<UserDto> following = userWithFollowingUpdated.getFollowing().stream()
                 .map(f -> userRepositoryImpl.getById(f)
                         .map(UserMapper::toUserDto)
-                        .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MESSAGE)))
+                        .orElseThrow(UserNotFoundException::new))
                 .toList();
 
-        return UserMapper.toUserWithFollowersDto(followingUpdated, followers);
+        return new UserDto(user.getId(), user.getName(), following);
     }
 
 
