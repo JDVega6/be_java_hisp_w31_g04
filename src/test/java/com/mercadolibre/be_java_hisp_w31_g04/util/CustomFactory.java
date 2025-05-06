@@ -1,15 +1,31 @@
 package com.mercadolibre.be_java_hisp_w31_g04.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.FileCopyUtils;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class CustomFactory {
+
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+    private static final ObjectWriter writer = mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false).writer();
+
+    private static final String USER_CREATE_RESPONSE_PATH = "jsons/user_created_response.json";
 
     public static Optional<User> getOptionalUser() {
         List<Integer> following = new ArrayList<>(List.of(3, 4));
@@ -58,10 +74,6 @@ public class CustomFactory {
         return users;
     }
 
-    public static User getUser() {
-        return new User(3, "David", new ArrayList<>(), new ArrayList<>());
-    }
-
     public static UserToCreateDto getUserToCreate() {
         return new UserToCreateDto("David");
     }
@@ -80,4 +92,30 @@ public class CustomFactory {
     public static FollowersCountDto getFollowersCountFromOptionalUser() {
         return new FollowersCountDto(2, "Eve", 2);
     }
+
+    //Integracion
+
+    private static String readJsonFromResource(String path) throws IOException {
+        ClassPathResource resource = new ClassPathResource(path);
+        try (Reader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
+            return FileCopyUtils.copyToString(reader);
+        }
+    }
+
+    public static UserDto getUserCreatedResponse() throws IOException{
+        return generateFromJson(readJsonFromResource(USER_CREATE_RESPONSE_PATH),UserDto.class);
+    }
+    public static String getUserToCreatePayload() throws JsonProcessingException {
+        return generateFromDto(getUserToCreate());
+    }
+
+    private static <T> T generateFromJson(String data, Class<T> classType) throws JsonProcessingException {
+        return mapper.readValue(data, classType);
+    }
+
+    private static String generateFromDto(Object dto) throws JsonProcessingException {
+        return writer.writeValueAsString(dto);
+    }
+
+
 }
