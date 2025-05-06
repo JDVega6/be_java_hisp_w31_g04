@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -141,13 +140,8 @@ class UserServiceImplTest {
         Optional<User> userFiveOpt = CustomFactory.getUserFive();
         User userThree = userThreeOpt.get();
         User userFour = userFourOpt.get();
-        User userThreeAfter = new User(
-                3,
-                "David",
-                new ArrayList<>(List.of(5)),
-                new ArrayList<>(List.of(1, 2, 10))
-        );
-        UserDto expected = new UserDto(3, "David", new ArrayList<>(List.of(new UserDto(5, "Pedro"))));
+        User userThreeAfter = CustomFactory.getUserThreeAfterUnfollow();
+        UserDto expected = CustomFactory.getUserThreeDtoAfterUnfollow();
 
         // Act
         when(userRepository.getById(anyInt())).thenAnswer(invocation -> {

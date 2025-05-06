@@ -99,6 +99,19 @@ public class CustomFactory {
         return new FollowersCountDto(2, "Eve", 2);
     }
 
+    public static User getUserThreeAfterUnfollow() {
+        return new User(
+                3,
+                "David",
+                new ArrayList<>(List.of(5)),
+                new ArrayList<>(List.of(1, 2, 10))
+        );
+    }
+
+    public static UserDto getUserThreeDtoAfterUnfollow() {
+        return new UserDto(3, "David", new ArrayList<>(List.of(new UserDto(5, "Pedro"))));
+    }
+
     //Integracion
 
     private static String readJsonFromResource(String path) throws IOException {
@@ -131,6 +144,5 @@ public class CustomFactory {
     private static String generateFromDto(Object dto) throws JsonProcessingException {
         return writer.writeValueAsString(dto);
     }
-
 
 }
