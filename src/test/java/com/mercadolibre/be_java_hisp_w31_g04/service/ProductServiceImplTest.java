@@ -1,5 +1,6 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service;
 
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowedPostsResponseDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.PostProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.ProductDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
@@ -9,6 +10,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.model.Product;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.ProductRepositoryImpl;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
+import com.mercadolibre.be_java_hisp_w31_g04.util.CustomFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
@@ -19,6 +21,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -105,10 +110,11 @@ class ProductServiceImplTest {
         //Arrange
         ProductDto productDto = new ProductDto(1,"Camisa","Ropa","Nike", "Blanca","");
         PostProductDto postProductDto = new PostProductDto(1,100, LocalDate.now(), productDto, 1,30.0);
+        Optional<User> user = Optional.of(new User(1, "Test User", null, null));
 
-        Mockito.when(userRepositoryImpl.getById(1)).thenReturn(Optional.of(
-                new User(1, "Test User", null, null
-                )));
+        Mockito.when(userRepositoryImpl.getById(1)).thenReturn(
+                    user
+                );
         Mockito.when(productRepositoryImpl.existsProduct(1)).thenReturn(true);
 
         //Act
@@ -129,8 +135,85 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void getFollowedPostsFromTwoWeeks() {
+    void getFollowedPostsFromTwoWeeks_shouldReturnListOfPostsSortedByDateAscending() {
+        // Arrange
+        Integer userId = 1;
+        String order = "date_asc";
+
+        ProductDto productDto = new ProductDto(1, "Camisa", "Ropa", "Nike", "Blanca", "");
+        Product product = new Product(1, "Camisa", "Ropa", "Nike", "Blanca", "");
+
+        Optional<User> user1 = CustomFactory.getOptionalUserOne();
+
+        Post post1 = new Post(1, 1, LocalDate.now().minusDays(5), product, 1, 30.0,false,0.0);
+        Post post2 = new Post(1, 2, LocalDate.now().minusDays(1), product, 1, 20.0,false,0.0);
+        Post post3 = new Post(1, 3, LocalDate.now().minusDays(3), product, 1, 30.0, false,0.0);
+
+        List<Post> unorderedPosts = Arrays.asList(post1, post2, post3);
+
+        // Act
+        Mockito.when(userRepositoryImpl.getById(1)).thenReturn(user1);
+
+        Mockito.when(productRepositoryImpl.findPostsBySellerIdsSince(
+                        Mockito.anyList(), Mockito.any(LocalDate.class)))
+                .thenReturn(unorderedPosts);
+
+        FollowedPostsResponseDto response = productServiceImpl.getFollowedPostsFromTwoWeeks(userId, order);
+
+        // Assert
+        List<PostProductDto> resultPosts = response.getPosts();
+
+        assertAll("Verifica orden ascendente por fecha",
+                () -> assertEquals(3, resultPosts.size()),
+                () -> assertTrue(
+                        resultPosts.getFirst().getDate().isBefore(resultPosts.get(1).getDate()) ||
+                                 resultPosts.getFirst().getDate().isEqual(resultPosts.get(1).getDate())),
+                () -> assertTrue(
+                        resultPosts.get(1).getDate().isBefore(resultPosts.get(2).getDate()) ||
+                                 resultPosts.get(1).getDate().isEqual(resultPosts.get(2).getDate()))
+        );
     }
+
+    @Test
+    void getFollowedPostsFromTwoWeeks_shouldReturnListOfPostsSortedByDateDescending() {
+        // Arrange
+        Integer userId = 1;
+        String order = "date_desc";
+
+        ProductDto productDto = new ProductDto(1, "Camisa", "Ropa", "Nike", "Blanca", "");
+        Product product = new Product(1, "Camisa", "Ropa", "Nike", "Blanca", "");
+
+        Optional<User> user1 = CustomFactory.getOptionalUserOne();
+
+        Post post1 = new Post(1, 1, LocalDate.now().minusDays(5), product, 1, 30.0,false,0.0);
+        Post post2 = new Post(1, 2, LocalDate.now().minusDays(1), product, 1, 20.0,false,0.0);
+        Post post3 = new Post(1, 3, LocalDate.now().minusDays(3), product, 1, 30.0, false,0.0);
+
+        List<Post> unorderedPosts = Arrays.asList(post1, post2, post3);
+
+        // Act
+        Mockito.when(userRepositoryImpl.getById(1)).thenReturn(user1);
+
+        Mockito.when(productRepositoryImpl.findPostsBySellerIdsSince(
+                        Mockito.anyList(), Mockito.any(LocalDate.class)))
+                .thenReturn(unorderedPosts);
+
+        FollowedPostsResponseDto response = productServiceImpl.getFollowedPostsFromTwoWeeks(userId, order);
+
+        // Assert
+        List<PostProductDto> resultPosts = response.getPosts();
+
+        assertAll("Verifica orden ascendente por fecha",
+                () -> assertEquals(3, resultPosts.size()),
+                () -> assertTrue(
+                        resultPosts.getFirst().getDate().isAfter(resultPosts.get(1).getDate()) ||
+                                resultPosts.getFirst().getDate().isEqual(resultPosts.get(1).getDate())),
+                () -> assertTrue(
+                        resultPosts.get(1).getDate().isAfter(resultPosts.get(2).getDate()) ||
+                                resultPosts.get(1).getDate().isEqual(resultPosts.get(2).getDate()))
+        );
+    }
+
 
     @Test
     void getPromoPostByUser() {
