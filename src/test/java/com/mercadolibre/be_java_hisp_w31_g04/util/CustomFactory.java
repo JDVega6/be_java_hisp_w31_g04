@@ -49,7 +49,7 @@ public class CustomFactory {
     }
 
     public static Optional<User> getUserFive() {
-        return Optional.of(new User(5, "Pedro", new ArrayList<>(), new ArrayList<>()));
+        return Optional.of(new User(5, "Bob", new ArrayList<>(), new ArrayList<>()));
     }
 
     public static UserDto getUserDtoThree() {
@@ -109,7 +109,7 @@ public class CustomFactory {
     }
 
     public static UserDto getUserThreeDtoAfterUnfollow() {
-        return new UserDto(3, "David", new ArrayList<>(List.of(new UserDto(5, "Pedro"))));
+        return new UserDto(3, "David", new ArrayList<>(List.of(new UserDto(5, "Bob"))));
     }
 
     //Integracion
@@ -135,6 +135,10 @@ public class CustomFactory {
 
     public static String getUserFollowersCountResponse() throws JsonProcessingException {
         return generateFromDto(getFollowersCountFromOptionalUser());
+    }
+
+    public static String getUnfollowResponse() throws JsonProcessingException {
+        return generateFromDto(getUserThreeDtoAfterUnfollow());
     }
 
     private static <T> T generateFromJson(String data, Class<T> classType) throws JsonProcessingException {
