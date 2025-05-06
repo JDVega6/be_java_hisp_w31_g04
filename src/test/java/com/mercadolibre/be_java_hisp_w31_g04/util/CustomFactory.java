@@ -8,6 +8,8 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.*;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
@@ -22,13 +24,17 @@ import java.util.Optional;
 
 public class CustomFactory {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     private static final ObjectWriter writer = mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false).writer();
 
     private static final String USER_CREATE_RESPONSE_PATH = "jsons/user_created_response.json";
 
     private static final String USER_FOLLOWED_RESPONSE_PATH = "jsons/user_followed_response.json";
+
+    private static final String POSTS_FOLLOWED_LIST_RESPONSE_PATH = "jsons/post_followed_list_response.json";
 
     public static Optional<User> getOptionalUserOne() {
         List<Integer> following = new ArrayList<>(List.of(3, 4));
@@ -83,6 +89,16 @@ public class CustomFactory {
 
     public static UserDto getUserDtoOne() { return new UserDto(1, "Juan"); }
 
+    public static Optional<User> getUserFiveOpt() {
+        List<Integer> following=new ArrayList<>(List.of(6,7));
+        List<Integer> followedBy=new ArrayList<>(List.of(3,4,12));
+        return Optional.of(new User(5,"Bob",following,followedBy));
+    }
+    public static Optional<User> getUserSix() {
+        List<Integer> following=new ArrayList<>(List.of(7,8));
+        List<Integer> followedBy=new ArrayList<>(List.of(4,5,12));
+        return Optional.of(new User(5,"Hank",following,followedBy));
+    }
     public static UserDto getUserDtoThree() {
         return new UserDto(3, "David");
     }
@@ -171,6 +187,10 @@ public class CustomFactory {
         return generateFromJson(readJsonFromResource(USER_FOLLOWERS_RESPONSE_PATH),UserWithFollowersDto.class);
     }
 
+    public static FollowedPostsResponseDto getPostFollowedFromTwoWeeksResponse() throws IOException {
+        return generateFromJson(readJsonFromResource(POSTS_FOLLOWED_LIST_RESPONSE_PATH), FollowedPostsResponseDto.class);
+    }
+
     public static String getUserToCreatePayload() throws JsonProcessingException {
         return generateFromDto(getUserToCreate());
     }
@@ -191,4 +211,15 @@ public class CustomFactory {
         return writer.writeValueAsString(dto);
     }
 
+    public static UserDto getUpdatedUserFollowedResponse() throws IOException {
+        UserDto base = getUserFollowedResponse();
+        base.getFollowed().add(new UserDto(5, "Bob"));
+        return base;
+    }
+
+    public static User getUserUpdated(){
+        List<Integer> following = new ArrayList<>(List.of(3,6,5));
+        List<Integer> followedBy = new ArrayList<>(List.of(2,3,10));
+        return new User(4,"Charlie", following,followedBy);
+    }
 }

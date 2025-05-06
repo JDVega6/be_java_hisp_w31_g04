@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,7 +84,24 @@ class ProductRepositoryImplTest {
     }
 
     @Test
-    void findPostsBySellerIdsSince() {
+    void findPostsBySellerIdsSince_ShouldReturnListOfPostsSortedByDateDescending() throws IOException{
+
+        ProductRepositoryImpl repo = new ProductRepositoryImpl();
+        List<Integer> sellerIds = List.of(1);
+        LocalDate fromDate = LocalDate.now().minusWeeks(2);
+
+        List<Post> posts = repo.findPostsBySellerIdsSince(sellerIds, fromDate);
+
+        assertFalse(posts.isEmpty(), "Deberia returnar posts del vendedor con id 1");
+        assertTrue(posts.size() >= 2, "Esperado al menos dos posts");
+
+        assertTrue(
+                !posts.get(0).getDate().isBefore(posts.get(1).getDate()),
+                "Posts no se encuentran organizados por date_desc"
+        );
+
+        assertEquals(18, posts.get(0).getId());
+        assertEquals(32, posts.get(1).getId());
     }
 
     @Test
