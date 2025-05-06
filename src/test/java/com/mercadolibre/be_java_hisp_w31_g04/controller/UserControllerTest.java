@@ -11,8 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -128,7 +127,77 @@ class UserControllerTest {
     }
 
     @Test
-    void removeFollow() {
+    void removeFollow_Ok() throws Exception {
+        // Arrange
+        Integer id = 3;
+        Integer idToUnfollow = 4;
+        String expected = CustomFactory.getUnfollowResponse();
+
+        // Act and Assert
+        MvcResult response = mockMvc
+                .perform(put("/users/{userId}/unfollow/{userIdToUnfollow}", id, idToUnfollow))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        assertEquals(expected, response.getResponse().getContentAsString());
+    }
+
+    @Test
+    void removeFollow_BadRequest_SameId() throws Exception {
+        // Arrange
+        Integer id = 3;
+        Integer idToUnfollow = id;
+        String expected = "No es posible realizar esta acción";
+
+        // Act & Assert
+        mockMvc.perform(put("/users/{userId}/unfollow/{userIdToUnfollow}", id, idToUnfollow))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
+    }
+
+    @Test
+    void removeFollow_BadRequest_DoesNotFollow() throws Exception {
+        // Arrange
+        Integer id = 3;
+        Integer idToUnfollow = 2;
+        String expected = "No sigues a este usuario";
+
+        // Act & Assert
+        mockMvc.perform(put("/users/{userId}/unfollow/{userIdToUnfollow}", id, idToUnfollow))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
+    }
+
+    @Test
+    void removeFollow_UserNotFound_User() throws Exception {
+        // Arrange
+        Integer id = 100;
+        Integer idToUnfollow = 4;
+        String expected = "No se encontró ningún usuario con ese ID";
+
+        // Act & Assert
+        mockMvc.perform(put("/users/{userId}/unfollow/{userIdToUnfollow}", id, idToUnfollow))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
+    }
+
+    @Test
+    void removeFollow_UserNotFound_UserToUnfollow() throws Exception {
+        // Arrange
+        Integer id = 3;
+        Integer idToUnfollow = 100;
+        String expected = "El usuario a dejar de seguir no existe";
+
+        // Act & Assert
+        mockMvc.perform(put("/users/{userId}/unfollow/{userIdToUnfollow}", id, idToUnfollow))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
     }
 
     @Test

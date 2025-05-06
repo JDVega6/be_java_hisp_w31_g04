@@ -55,6 +55,10 @@ public class CustomFactory {
         return Optional.of(new User(4, "Charlie", following, followedBy));
     }
 
+    public static Optional<User> getUserFive() {
+        return Optional.of(new User(5, "Bob", new ArrayList<>(), new ArrayList<>()));
+    }
+
     public static UserDto getUserDtoThree() {
         return new UserDto(3, "David");
     }
@@ -102,6 +106,19 @@ public class CustomFactory {
         return new FollowersCountDto(2, "Eve", 2);
     }
 
+    public static User getUserThreeAfterUnfollow() {
+        return new User(
+                3,
+                "David",
+                new ArrayList<>(List.of(5)),
+                new ArrayList<>(List.of(1, 2, 10))
+        );
+    }
+
+    public static UserDto getUserThreeDtoAfterUnfollow() {
+        return new UserDto(3, "David", new ArrayList<>(List.of(new UserDto(5, "Bob"))));
+    }
+
     //Integracion
 
     private static String readJsonFromResource(String path) throws IOException {
@@ -127,6 +144,10 @@ public class CustomFactory {
         return generateFromDto(getFollowersCountFromOptionalUser());
     }
 
+    public static String getUnfollowResponse() throws JsonProcessingException {
+        return generateFromDto(getUserThreeDtoAfterUnfollow());
+    }
+
     private static <T> T generateFromJson(String data, Class<T> classType) throws JsonProcessingException {
         return mapper.readValue(data, classType);
     }
@@ -134,6 +155,5 @@ public class CustomFactory {
     private static String generateFromDto(Object dto) throws JsonProcessingException {
         return writer.writeValueAsString(dto);
     }
-
 
 }
