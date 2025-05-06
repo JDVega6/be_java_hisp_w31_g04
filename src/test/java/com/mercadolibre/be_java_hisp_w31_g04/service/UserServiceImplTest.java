@@ -4,6 +4,7 @@ import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.UserNotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
@@ -99,8 +100,38 @@ class UserServiceImplTest {
 
     @Test
     void getUserWithFollowed() {
+        // Arrange
+        Integer id = 2;
+        String order = "";
 
+        User user = CustomFactory.getUser();
+        Optional<User> optionalUser = Optional.of(user);
 
+        UserWithFollowersDto expected = CustomFactory.getUserWithFollowersDto();
+
+        when(userRepository.getById(eq(id))).thenReturn(optionalUser);
+        when(userRepository.getById(eq(10))).thenReturn(Optional.of(CustomFactory.getUserTen()));
+        when(userRepository.getById(eq(1))).thenReturn(Optional.of(CustomFactory.getUserOne()));
+
+        // Act
+        UserWithFollowersDto result = userService.getUserWithFollowed(id, order);
+
+        // Assert
+        assertEquals(expected.getUserId(), result.getUserId());
+        assertEquals(expected.getUserName(), result.getUserName());
+        assertIterableEquals(expected.getFollowers(), result.getFollowers());
+    }
+
+    @Test
+    void getUserWithFollowersError() {
+        // Arrange
+        Optional<User> userEmpty = Optional.empty();
+        Integer id = 2;
+        String order = "";
+        when(userRepository.getById(id)).thenReturn(userEmpty);
+
+        // Act and Assert
+        assertThrows(UserNotFoundException.class, () -> userService.getUserWithFollowed(id, order));
     }
 
     @Test

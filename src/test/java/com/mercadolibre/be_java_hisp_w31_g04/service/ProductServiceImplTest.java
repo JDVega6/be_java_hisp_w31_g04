@@ -143,8 +143,7 @@ class ProductServiceImplTest {
         ProductDto productDto = new ProductDto(1, "Camisa", "Ropa", "Nike", "Blanca", "");
         Product product = new Product(1, "Camisa", "Ropa", "Nike", "Blanca", "");
 
-        Optional<User> user1 = CustomFactory.getUserOne();     // userId = 1, sigue a [2]
-        Optional<User> user2 = CustomFactory.getOptionalUser(); // userId = 2
+        Optional<User> user1 = CustomFactory.getOptionalUserOne();
 
         Post post1 = new Post(1, 1, LocalDate.now().minusDays(5), product, 1, 30.0,false,0.0);
         Post post2 = new Post(1, 2, LocalDate.now().minusDays(1), product, 1, 20.0,false,0.0);
@@ -184,8 +183,7 @@ class ProductServiceImplTest {
         ProductDto productDto = new ProductDto(1, "Camisa", "Ropa", "Nike", "Blanca", "");
         Product product = new Product(1, "Camisa", "Ropa", "Nike", "Blanca", "");
 
-        Optional<User> user1 = CustomFactory.getUserOne();     // userId = 1, sigue a [2]
-        Optional<User> user2 = CustomFactory.getOptionalUser(); // userId = 2
+        Optional<User> user1 = CustomFactory.getOptionalUserOne();
 
         Post post1 = new Post(1, 1, LocalDate.now().minusDays(5), product, 1, 30.0,false,0.0);
         Post post2 = new Post(1, 2, LocalDate.now().minusDays(1), product, 1, 20.0,false,0.0);
