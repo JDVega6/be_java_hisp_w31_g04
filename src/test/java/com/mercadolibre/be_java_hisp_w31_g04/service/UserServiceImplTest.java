@@ -1,23 +1,18 @@
 package com.mercadolibre.be_java_hisp_w31_g04.service;
 
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.UserNotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
-import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
-import com.mercadolibre.be_java_hisp_w31_g04.service.api.IUserService;
 import com.mercadolibre.be_java_hisp_w31_g04.util.CustomFactory;
-import com.mercadolibre.be_java_hisp_w31_g04.util.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,10 +31,9 @@ class UserServiceImplTest {
     @Test
     void createUser() {
         // Arrange
-        User userEmpty=CustomFactory.getUserEmpty();
-        UserDto expected= CustomFactory.getUserDtoThree();
-        UserToCreateDto payload= CustomFactory.getUserToCreate();
-
+        User userEmpty = CustomFactory.getUserEmpty();
+        UserDto expected = CustomFactory.getUserDtoThree();
+        UserToCreateDto payload = CustomFactory.getUserToCreate();
 
         // Act
         doAnswer(invocation -> {
@@ -47,13 +41,11 @@ class UserServiceImplTest {
             userArg.setId(3);
             return null;
         }).when(userRepository).saveUser(userEmpty);
-        UserDto response=userService.createUser(payload);
+        UserDto response = userService.createUser(payload);
 
         // Assert
         verify(userRepository).saveUser(any(User.class));
-        assertEquals(expected.getUserId(),response.getUserId());
-
-
+        assertEquals(expected.getUserId(), response.getUserId());
 
     }
 
@@ -69,6 +61,8 @@ class UserServiceImplTest {
         String order = "";
         UserDto expected = CustomFactory.getUserDto();
         List<User> users = CustomFactory.getUserList();
+
+        // Act
         when(userRepository.getById(anyInt())).thenAnswer(invocation -> {
             Integer argument = invocation.getArgument(0);
 
@@ -78,31 +72,28 @@ class UserServiceImplTest {
                 return CustomFactory.getUserThree();
             } else if (argument.equals(4)) {
                 return CustomFactory.getUserFour();
-            }else{
+            } else {
                 return new User();
             }
         });
-
-        // Act
-        UserDto response=userService.getUserFollowed(id, order);
-
+        UserDto response = userService.getUserFollowed(id, order);
 
         // Assert
-        verify(userRepository,atLeast(3)).getById(anyInt());
-        verify(userRepository,atLeast(1)).orderUsers(users,order);
-        assertEquals(expected,response);
+        verify(userRepository, atLeast(3)).getById(anyInt());
+        verify(userRepository, atLeast(1)).orderUsers(users, order);
+        assertEquals(expected, response);
     }
 
     @Test
     void getUserFollowedError() {
         // Arrange
-        Optional<User> userEmpty =Optional.empty() ;
+        Optional<User> userEmpty = Optional.empty();
         Integer id = 2;
         String order = "";
         when(userRepository.getById(id)).thenReturn(userEmpty);
 
         // Act and Assert
-        assertThrows(UserNotFoundException.class,()->userService.getUserFollowed(id, order));
+        assertThrows(UserNotFoundException.class, () -> userService.getUserFollowed(id, order));
     }
 
     @Test
@@ -113,6 +104,29 @@ class UserServiceImplTest {
 
     @Test
     void getUserFollowersCount() {
+        // Arrange
+        Integer id = 2;
+        Optional<User> user = CustomFactory.getOptionalUser();
+        FollowersCountDto expected = CustomFactory.getFollowersCountFromOptionalUser();
+
+        // Act
+        when(userRepository.getById(id)).thenReturn(user);
+        FollowersCountDto response = userService.getUserFollowersCount(id);
+
+        // Assert
+        verify(userRepository, atLeast(1)).getById(id);
+        assertEquals(expected, response);
+    }
+
+    @Test
+    void getUserFollowersCountError() {
+        // Arrange
+        Integer id = 1;
+        Optional<User> user = Optional.empty();
+
+        // Act and Assert
+        when(userRepository.getById(id)).thenReturn(user);
+        assertThrows(UserNotFoundException.class, () -> userService.getUserFollowersCount(id));
     }
 
     @Test

@@ -35,7 +35,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDto getUserById(Integer userId) {
-        User user =  userRepositoryImpl.getById(userId)
+        User user = userRepositoryImpl.getById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
         return UserMapper.toUserDto(user);
@@ -43,14 +43,13 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDto getUserFollowed(Integer userId, String order) {
-        User user= userRepositoryImpl.getById(userId)
+        User user = userRepositoryImpl.getById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        List<UserDto> followed=new ArrayList<>();
-        List<User> users= new ArrayList<>(user.getFollowing().stream().map(u->userRepositoryImpl.getById(u).get()).toList());
+        List<UserDto> followed = new ArrayList<>();
+        List<User> users = new ArrayList<>(user.getFollowing().stream().map(u -> userRepositoryImpl.getById(u).get()).toList());
         userRepositoryImpl.orderUsers(users, order);
-        users.forEach(user1-> followed.add(UserMapper.toUserDto(user1)) );
-
+        users.forEach(user1 -> followed.add(UserMapper.toUserDto(user1)));
 
 
         return new UserDto(user.getId(), user.getName(), followed);
@@ -65,7 +64,7 @@ public class UserServiceImpl implements IUserService {
         List<User> followedBy = new ArrayList<>(user.getFollowedBy().stream()
                 .map(u -> userRepositoryImpl.getById(u).get()).toList());
         userRepositoryImpl.orderUsers(followedBy, order);
-        List<UserDto>followedByDto=followedBy.stream().map(UserMapper::toUserDto).toList();
+        List<UserDto> followedByDto = followedBy.stream().map(UserMapper::toUserDto).toList();
         return UserMapper.toUserWithFollowersDto(user, followedByDto);
     }
 
@@ -79,7 +78,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDto removeFollow(Integer userId, Integer userIdToUnfollow) {
-        if (userId.equals(userIdToUnfollow)){
+        if (userId.equals(userIdToUnfollow)) {
             throw new BadRequestException("No es posible realizar esta acción");
         }
 
@@ -97,7 +96,7 @@ public class UserServiceImpl implements IUserService {
 
         List<User> updatedFollowing = new ArrayList<>(user.getFollowing().stream()
                 .map(u -> userRepositoryImpl.getById(u).get()).toList());
-        List<UserDto>updatedFollowingDto = updatedFollowing.stream().map(UserMapper::toUserDto).toList();
+        List<UserDto> updatedFollowingDto = updatedFollowing.stream().map(UserMapper::toUserDto).toList();
 
         return new UserDto(updatedUser.getId(), updatedUser.getName(), updatedFollowingDto);
     }
@@ -115,15 +114,15 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserDto updateFollowByUserId(Integer userId, Integer userIdToFollow) {
 
-        if(userId.equals(userIdToFollow)){
+        if (userId.equals(userIdToFollow)) {
             throw new BadRequestException("No es posible realizar esta acción");
         }
 
         User user = userRepositoryImpl.getById(userId).orElseThrow(UserNotFoundException::new);
         User toFollow = userRepositoryImpl.getById(userIdToFollow)
-                .orElseThrow(()-> new UserNotFoundException("El usuario a seguir no existe"));
+                .orElseThrow(() -> new UserNotFoundException("El usuario a seguir no existe"));
 
-        if(user.getFollowing().contains(userIdToFollow)){
+        if (user.getFollowing().contains(userIdToFollow)) {
             throw new BadRequestException("Ya sigues a este usuario");
         }
 
