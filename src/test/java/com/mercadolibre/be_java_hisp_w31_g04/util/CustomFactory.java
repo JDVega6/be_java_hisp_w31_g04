@@ -29,6 +29,13 @@ public class CustomFactory {
 
     private static final String USER_FOLLOWED_RESPONSE_PATH = "jsons/user_followed_response.json";
 
+    public static Optional<User> getUserOne() {
+        List<Integer> following = new ArrayList<>(List.of(3, 4));
+        List<Integer> followedBy = new ArrayList<>(List.of(2, 10));
+        return Optional.of(new User(1, "Alice", following, followedBy));
+    }
+
+
     public static Optional<User> getOptionalUser() {
         List<Integer> following = new ArrayList<>(List.of(3, 4));
         List<Integer> followedBy = new ArrayList<>(List.of(1, 10));
