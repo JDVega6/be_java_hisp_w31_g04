@@ -139,5 +139,28 @@ class UserServiceImplTest {
 
     @Test
     void updateFollowByUserId() {
+        User userId = CustomFactory.getUserFour().get();
+        User userToFollow = CustomFactory.getUserThree().get();
+        User userInListFive = CustomFactory.getUserFive().get();
+        User userInListSix = CustomFactory.getUserSix().get();
+
+        User userUpdated = CustomFactory.getUserUpdated();
+
+        when(userRepository.getById(4)).thenReturn(Optional.of(userId));
+        when(userRepository.getById(3)).thenReturn(Optional.of(userToFollow));
+        when(userRepository.getById(5)).thenReturn(Optional.of(userInListFive));
+        when(userRepository.getById(6)).thenReturn(Optional.of(userInListSix));
+
+        when(userRepository.updateFollowByUserId(userId, userToFollow))
+                .thenReturn(userUpdated);
+
+        UserDto dto = userService.updateFollowByUserId(4,3);
+
+        assertEquals(4, dto.getUserId());
+        assertTrue(dto.getFollowed()
+                .stream()
+                .anyMatch(u -> u.getUserId().equals(3)));
+
+        verify(userRepository).updateFollowByUserId(userId, userToFollow);
     }
 }

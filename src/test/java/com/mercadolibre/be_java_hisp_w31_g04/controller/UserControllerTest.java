@@ -6,22 +6,27 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class UserControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+//    @MockitoBean
+//    private IUserService userService;
 
     @Test
     void createUser() throws Exception{
@@ -132,7 +137,68 @@ class UserControllerTest {
     }
 
     @Test
-    void updateFollow() {
+    void updateFollow() throws Exception{
+
+        int userId = 2;
+        int userToFollow = 5;
+        mockMvc.perform(put("/users/{userId}/follow/{userIdToFollow}", userId, userToFollow))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.followed[*].user_id", containsInAnyOrder(3,4,5)));
+    }
+
+    @Test
+    void updateFollowNotFoundUserId() throws Exception {
+
+        int userId = 100;
+        int userToFollow = 5;
+        String expected = "No se encontró ningún usuario con ese ID";
+
+        mockMvc.perform(put("/users/{userId}/follow/{userIdToFollow}",userId, userToFollow))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
+
+    }
+
+    @Test
+    void updateFollowNotFoundUserToFollow() throws Exception {
+
+        int userId = 1;
+        int userToFollow = 100;
+        String expected = "El usuario a seguir no existe";
+
+        mockMvc.perform(put("/users/{userId}/follow/{userIdToFollow}",userId, userToFollow))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
+    }
+
+    @Test
+    void updateFollowBadRequestSameId() throws Exception {
+        int sameId = 1;
+        String expectedSameId = "No es posible realizar esta acción";
+
+        mockMvc.perform(put("/users/{userId}/follow/{userIdToFollow}",sameId, sameId))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expectedSameId));
+    }
+
+    @Test
+    void updateFollowBadRequestAlreadyFollow() throws Exception {
+        int userId = 1;
+        int userToFollow = 2;
+        String expectedAlreadyFollow = "Ya sigues a este usuario";
+
+        mockMvc.perform(put("/users/{userId}/follow/{userIdToFollow}",userId, userToFollow))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expectedAlreadyFollow));
     }
 
     @Test

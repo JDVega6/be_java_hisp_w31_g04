@@ -115,6 +115,13 @@ class UserRepositoryImplTest {
 
     @Test
     void updateFollowByUserId() {
+        User userFollowing = CustomFactory.getOptionalUser().get();
+        User userToFollow  = CustomFactory.getUserThree().get();
+
+        User result = userRepository.updateFollowByUserId(userFollowing, userToFollow);
+
+        assertTrue(result.getFollowing().contains(userToFollow.getId()));
+        assertTrue(result.getFollowedBy().contains(userToFollow.getId()));
     }
 
     @Test

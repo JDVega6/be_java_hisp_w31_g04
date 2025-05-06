@@ -47,7 +47,16 @@ public class CustomFactory {
         List<Integer> followedBy = new ArrayList<>(List.of(2, 3, 10));
         return Optional.of(new User(4, "Charlie", following, followedBy));
     }
-
+    public static Optional<User> getUserFive() {
+        List<Integer> following=new ArrayList<>(List.of(6,7));
+        List<Integer> followedBy=new ArrayList<>(List.of(3,4,12));
+        return Optional.of(new User(5,"Bob",following,followedBy));
+    }
+    public static Optional<User> getUserSix() {
+        List<Integer> following=new ArrayList<>(List.of(7,8));
+        List<Integer> followedBy=new ArrayList<>(List.of(4,5,12));
+        return Optional.of(new User(5,"Hank",following,followedBy));
+    }
     public static UserDto getUserDtoThree() {
         return new UserDto(3, "David");
     }
@@ -128,5 +137,15 @@ public class CustomFactory {
         return writer.writeValueAsString(dto);
     }
 
+    public static UserDto getUpdatedUserFollowedResponse() throws IOException {
+        UserDto base = getUserFollowedResponse();
+        base.getFollowed().add(new UserDto(5, "Bob"));
+        return base;
+    }
 
+    public static User getUserUpdated(){
+        List<Integer> following = new ArrayList<>(List.of(3,6,5));
+        List<Integer> followedBy = new ArrayList<>(List.of(2,3,10));
+        return new User(4,"Charlie", following,followedBy);
+    }
 }
