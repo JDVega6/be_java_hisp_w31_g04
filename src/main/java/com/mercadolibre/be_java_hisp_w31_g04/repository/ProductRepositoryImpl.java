@@ -61,8 +61,8 @@ public class ProductRepositoryImpl implements IProductRepository {
     }
 
     @Override
-    public void saveProduct(Product product) {
-        listOfProducts.add(product);
+    public boolean saveProduct(Product product) {
+        return listOfProducts.add(product);
     }
 
     @Override
