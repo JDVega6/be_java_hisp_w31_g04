@@ -8,7 +8,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -36,8 +39,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.user_id").value(expected.getUserId()))
                 .andExpect(jsonPath("$.user_name").value(expected.getUserName()));
 
-
-
     }
 
     @Test
@@ -54,7 +55,33 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserFollowersCount() {
+    void getUserFollowersCount_Ok() throws Exception {
+        // Arrange
+        Integer id = 2;
+        String expected = CustomFactory.getUserFollowersCountResponse();
+
+        // Act & Assert
+        MvcResult response = mockMvc.perform(get("/users/{userId}/followers/count", id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        assertEquals(expected, response.getResponse().getContentAsString());
+    }
+
+    @Test
+    void getUserFollowersCount_NotFound() throws Exception {
+        // Arrange
+        Integer id = 14;
+        String expected = "No se encontró ningún usuario con ese ID";
+
+        // Act & Assert
+        mockMvc.perform(get("/users/{userId}/followers/count", id))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
     }
 
     @Test

@@ -105,8 +105,13 @@ public class CustomFactory {
     public static UserDto getUserCreatedResponse() throws IOException{
         return generateFromJson(readJsonFromResource(USER_CREATE_RESPONSE_PATH),UserDto.class);
     }
+
     public static String getUserToCreatePayload() throws JsonProcessingException {
         return generateFromDto(getUserToCreate());
+    }
+
+    public static String getUserFollowersCountResponse() throws JsonProcessingException {
+        return generateFromDto(getFollowersCountFromOptionalUser());
     }
 
     private static <T> T generateFromJson(String data, Class<T> classType) throws JsonProcessingException {
