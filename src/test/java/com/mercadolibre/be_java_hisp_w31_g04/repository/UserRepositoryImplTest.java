@@ -6,7 +6,6 @@ import com.mercadolibre.be_java_hisp_w31_g04.repository.api.IUserRepository;
 import com.mercadolibre.be_java_hisp_w31_g04.util.CustomFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.List;
@@ -107,10 +106,29 @@ class UserRepositoryImplTest {
 
     @Test
     void removeFromFollowing() {
+        // Arrange
+        User user = CustomFactory.getUserThree().get();
+        User userToUnfollow = CustomFactory.getUserFour().get();
+        User userExpected = CustomFactory.getUserThreeAfterUnfollow();
+
+        // Act
+        User userRet = userRepository.removeFromFollowing(user, userToUnfollow);
+
+        // Assert
+        assertEquals(userExpected, userRet);
     }
 
     @Test
     void removeFromFollowedBy() {
+        // Arrange
+        User user = CustomFactory.getUserFour().get();
+        User userWhoUnfollowed = CustomFactory.getUserThree().get();
+
+        // Act
+        userRepository.removeFromFollowedBy(user, userWhoUnfollowed);
+
+        // Assert
+        assertFalse(user.getFollowedBy().contains(userWhoUnfollowed.getId()));
     }
 
     @Test

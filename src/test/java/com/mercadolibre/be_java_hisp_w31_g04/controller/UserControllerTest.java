@@ -1,6 +1,7 @@
 package com.mercadolibre.be_java_hisp_w31_g04.controller;
 
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.util.CustomFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,8 +100,53 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserFollowers() {
+    void getUserFollowers() throws Exception {
+        // Arrange
+        UserWithFollowersDto expected = CustomFactory.getUserFollowersResponse();
+        
+        // Act and Assert
+        mockMvc.perform(get("/users/{userId}/followers/list",2))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.followers[0].user_id").value(expected.getFollowers().getFirst().getUserId()))
+                .andExpect(jsonPath("$.followers[0].user_name").value(expected.getFollowers().getFirst().getUserName()))
+                .andExpect(jsonPath("$.followers[1].user_id").value(expected.getFollowers().get(1).getUserId()))
+                .andExpect(jsonPath("$.followers[1].user_name").value(expected.getFollowers().get(1).getUserName()));
+
     }
+
+    @Test
+    void getUserFollowersNotFound() throws Exception {
+        // Arrange
+        int id=100;
+        String expected="No se encontró ningún usuario con ese ID";
+
+        // Act and Assert
+        mockMvc.perform(get("/users/{userId}/followers/list", id))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
+
+    }
+
+    @Test
+    void getUserFollowersBadRequest() throws Exception {
+        // Arrange
+        int id = 1;
+        String expected="Parámetro 'order' inválido. Usa 'name_asc' o 'name_desc'.";
+
+        // Act and Assert
+        mockMvc.perform(get("/users/{userId}/followers/list", id)
+                        .param("order","invalido"))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
+
+    }
+
 
     @Test
     void getUserFollowersCount_Ok() throws Exception {

@@ -3,6 +3,8 @@ package com.mercadolibre.be_java_hisp_w31_g04.service;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
+import com.mercadolibre.be_java_hisp_w31_g04.exception.BadRequestException;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.exception.UserNotFoundException;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import com.mercadolibre.be_java_hisp_w31_g04.repository.UserRepositoryImpl;
@@ -98,8 +100,38 @@ class UserServiceImplTest {
 
     @Test
     void getUserWithFollowed() {
+        // Arrange
+        Integer id = 2;
+        String order = "";
 
+        User user = CustomFactory.getUser();
+        Optional<User> optionalUser = Optional.of(user);
 
+        UserWithFollowersDto expected = CustomFactory.getUserWithFollowersDto();
+
+        when(userRepository.getById(eq(id))).thenReturn(optionalUser);
+        when(userRepository.getById(eq(10))).thenReturn(Optional.of(CustomFactory.getUserTen()));
+        when(userRepository.getById(eq(1))).thenReturn(Optional.of(CustomFactory.getUserOne()));
+
+        // Act
+        UserWithFollowersDto result = userService.getUserWithFollowed(id, order);
+
+        // Assert
+        assertEquals(expected.getUserId(), result.getUserId());
+        assertEquals(expected.getUserName(), result.getUserName());
+        assertIterableEquals(expected.getFollowers(), result.getFollowers());
+    }
+
+    @Test
+    void getUserWithFollowersError() {
+        // Arrange
+        Optional<User> userEmpty = Optional.empty();
+        Integer id = 2;
+        String order = "";
+        when(userRepository.getById(id)).thenReturn(userEmpty);
+
+        // Act and Assert
+        assertThrows(UserNotFoundException.class, () -> userService.getUserWithFollowed(id, order));
     }
 
     @Test
@@ -131,6 +163,90 @@ class UserServiceImplTest {
 
     @Test
     void removeFollow() {
+        // Arrange
+        Integer id = 3;
+        Integer idToUnfollow = 4;
+        Optional<User> userThreeOpt = CustomFactory.getUserThree();
+        Optional<User> userFourOpt = CustomFactory.getUserFour();
+        Optional<User> userFiveOpt = CustomFactory.getUserFive();
+        User userThree = userThreeOpt.get();
+        User userFour = userFourOpt.get();
+        User userThreeAfter = CustomFactory.getUserThreeAfterUnfollow();
+        UserDto expected = CustomFactory.getUserThreeDtoAfterUnfollow();
+
+        // Act
+        when(userRepository.getById(anyInt())).thenAnswer(invocation -> {
+            Integer argument = invocation.getArgument(0);
+
+            if (argument.equals(3)) {
+                return userThreeOpt;
+            } else if (argument.equals(4)) {
+                return userFourOpt;
+            } else {
+                return userFiveOpt;
+            }
+        });
+        when(userRepository.removeFromFollowing(userThree, userFour)).thenReturn(userThreeAfter);
+        UserDto response = userService.removeFollow(id, idToUnfollow);
+
+        // Assert
+        assertEquals(expected, response);
+    }
+
+    @Test
+    void removeFollow_Error_SameId() {
+        // Arrange
+        Integer id = 3;
+        Integer idToUnfollow = id;
+        String expected = "No es posible realizar esta acción";
+
+        // Act and Assert
+        Exception ex = assertThrows(BadRequestException.class, () -> userService.removeFollow(id, idToUnfollow));
+        assertEquals(expected, ex.getMessage());
+    }
+
+    @Test
+    void removeFollow_Error_DoesNotFollow() {
+        // Arrange
+        Integer id = 3;
+        Integer idToUnfollow = 2;
+        Optional<User> userThreeOpt = CustomFactory.getUserThree();
+        Optional<User> userTwoOpt = CustomFactory.getOptionalUser();
+        String expected = "No sigues a este usuario";
+
+        // Act and Assert
+        when(userRepository.getById(id)).thenReturn(userThreeOpt);
+        when(userRepository.getById(idToUnfollow)).thenReturn(userTwoOpt);
+        Exception ex = assertThrows(BadRequestException.class, () -> userService.removeFollow(id, idToUnfollow));
+        assertEquals(expected, ex.getMessage());
+    }
+
+    @Test
+    void removeFollow_Error_UserNotFound() {
+        // Arrange
+        Integer id = 3;
+        Integer idToUnfollow = 4;
+        Optional<User> userThreeOpt = Optional.empty();
+
+        // Act and Assert
+        when(userRepository.getById(id)).thenReturn(userThreeOpt);
+        assertThrows(UserNotFoundException.class, () -> userService.removeFollow(id, idToUnfollow));
+    }
+
+    @Test
+    void removeFollow_Error_UserToUnfollowNotFound() {
+        // Arrange
+        Integer id = 3;
+        Integer idToUnfollow = 4;
+        Optional<User> userThreeOpt = CustomFactory.getUserThree();
+        Optional<User> userFourOpt = Optional.empty();
+        String expected = "El usuario a dejar de seguir no existe";
+
+        // Act and Assert
+        when(userRepository.getById(id)).thenReturn(userThreeOpt);
+        when(userRepository.getById(idToUnfollow)).thenReturn(userFourOpt);
+        Exception ex = assertThrows(UserNotFoundException.class, () -> userService.removeFollow(id, idToUnfollow));
+        assertEquals(expected, ex.getMessage());
     }
 
     @Test
@@ -141,7 +257,7 @@ class UserServiceImplTest {
     void updateFollowByUserId() {
         User userId = CustomFactory.getUserFour().get();
         User userToFollow = CustomFactory.getUserThree().get();
-        User userInListFive = CustomFactory.getUserFive().get();
+        User userInListFive = CustomFactory.getUserFiveOpt().get();
         User userInListSix = CustomFactory.getUserSix().get();
 
         User userUpdated = CustomFactory.getUserUpdated();

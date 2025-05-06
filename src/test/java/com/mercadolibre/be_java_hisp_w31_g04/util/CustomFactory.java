@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.*;
-import com.mercadolibre.be_java_hisp_w31_g04.model.Post;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
@@ -15,8 +18,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,18 +36,33 @@ public class CustomFactory {
 
     private static final String POSTS_FOLLOWED_LIST_RESPONSE_PATH = "jsons/post_followed_list_response.json";
 
-    public static Optional<User> getUserOne() {
+    public static Optional<User> getOptionalUserOne() {
         List<Integer> following = new ArrayList<>(List.of(3, 4));
         List<Integer> followedBy = new ArrayList<>(List.of(2, 10));
         return Optional.of(new User(1, "Alice", following, followedBy));
     }
 
 
+    private static final String USER_FOLLOWERS_RESPONSE_PATH =  "jsons/user_followers_response.json";
+
     public static Optional<User> getOptionalUser() {
         List<Integer> following = new ArrayList<>(List.of(3, 4));
         List<Integer> followedBy = new ArrayList<>(List.of(1, 10));
 
         return Optional.of(new User(2, "Eve", following, followedBy));
+    }
+
+    public static User getUser() {
+        List<Integer> following = new ArrayList<>(List.of(3, 4));
+        List<Integer> followedBy = new ArrayList<>(List.of(1, 10));
+
+        return new User(2, "Eve", following, followedBy);
+    }
+
+    public static User getUserOne() {
+        List<Integer> following = new ArrayList<>(List.of(2, 3));
+        List<Integer> followedBy = new ArrayList<>(List.of(10));
+        return new User(1, "Juan", following, followedBy);
     }
 
     public static Optional<User> getUserThree() {
@@ -60,7 +76,20 @@ public class CustomFactory {
         List<Integer> followedBy = new ArrayList<>(List.of(2, 3, 10));
         return Optional.of(new User(4, "Charlie", following, followedBy));
     }
+
     public static Optional<User> getUserFive() {
+        return Optional.of(new User(5, "Bob", new ArrayList<>(), new ArrayList<>()));
+    }
+
+    public static User getUserTen() {
+        List<Integer> following = new ArrayList<>(List.of(11, 1, 2, 3, 4));
+        List<Integer> followedBy = new ArrayList<>(List.of(8, 9));
+        return new User(10, "Alice", following, followedBy);
+    }
+
+    public static UserDto getUserDtoOne() { return new UserDto(1, "Juan"); }
+
+    public static Optional<User> getUserFiveOpt() {
         List<Integer> following=new ArrayList<>(List.of(6,7));
         List<Integer> followedBy=new ArrayList<>(List.of(3,4,12));
         return Optional.of(new User(5,"Bob",following,followedBy));
@@ -78,9 +107,16 @@ public class CustomFactory {
         return new UserDto(4, "Charlie");
     }
 
+    public static UserDto getUserDtoTen() { return new UserDto(10, "Alice"); }
+
     public static UserDto getUserDto() {
         List<UserDto> users = new ArrayList<>(List.of(getUserDtoThree(), getUserDtoFour()));
         return new UserDto(2, "Eve", users);
+    }
+
+    public static UserWithFollowersDto getUserWithFollowersDto() {
+        List<UserDto> users = new ArrayList<>(List.of(getUserDtoOne(), getUserDtoTen()));
+        return new UserWithFollowersDto(2, "Eve", users);
     }
 
     public static User getUserEmpty() {
@@ -117,6 +153,19 @@ public class CustomFactory {
         return new FollowersCountDto(2, "Eve", 2);
     }
 
+    public static User getUserThreeAfterUnfollow() {
+        return new User(
+                3,
+                "David",
+                new ArrayList<>(List.of(5)),
+                new ArrayList<>(List.of(1, 2, 10))
+        );
+    }
+
+    public static UserDto getUserThreeDtoAfterUnfollow() {
+        return new UserDto(3, "David", new ArrayList<>(List.of(new UserDto(5, "Bob"))));
+    }
+
     //Integracion
 
     private static String readJsonFromResource(String path) throws IOException {
@@ -134,6 +183,10 @@ public class CustomFactory {
         return generateFromJson(readJsonFromResource(USER_FOLLOWED_RESPONSE_PATH),UserDto.class);
     }
 
+    public static UserWithFollowersDto getUserFollowersResponse() throws IOException{
+        return generateFromJson(readJsonFromResource(USER_FOLLOWERS_RESPONSE_PATH),UserWithFollowersDto.class);
+    }
+
     public static FollowedPostsResponseDto getPostFollowedFromTwoWeeksResponse() throws IOException {
         return generateFromJson(readJsonFromResource(POSTS_FOLLOWED_LIST_RESPONSE_PATH), FollowedPostsResponseDto.class);
     }
@@ -144,6 +197,10 @@ public class CustomFactory {
 
     public static String getUserFollowersCountResponse() throws JsonProcessingException {
         return generateFromDto(getFollowersCountFromOptionalUser());
+    }
+
+    public static String getUnfollowResponse() throws JsonProcessingException {
+        return generateFromDto(getUserThreeDtoAfterUnfollow());
     }
 
     private static <T> T generateFromJson(String data, Class<T> classType) throws JsonProcessingException {
