@@ -48,6 +48,10 @@ public class CustomFactory {
         return Optional.of(new User(4, "Charlie", following, followedBy));
     }
 
+    public static Optional<User> getUserFive() {
+        return Optional.of(new User(5, "Pedro", new ArrayList<>(), new ArrayList<>()));
+    }
+
     public static UserDto getUserDtoThree() {
         return new UserDto(3, "David");
     }

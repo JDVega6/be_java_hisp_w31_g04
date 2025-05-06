@@ -94,7 +94,7 @@ public class UserServiceImpl implements IUserService {
         User updatedUser = userRepositoryImpl.removeFromFollowing(user, toUnfollow);
         userRepositoryImpl.removeFromFollowedBy(toUnfollow, user);
 
-        List<User> updatedFollowing = new ArrayList<>(user.getFollowing().stream()
+        List<User> updatedFollowing = new ArrayList<>(updatedUser.getFollowing().stream()
                 .map(u -> userRepositoryImpl.getById(u).get()).toList());
         List<UserDto> updatedFollowingDto = updatedFollowing.stream().map(UserMapper::toUserDto).toList();
 
