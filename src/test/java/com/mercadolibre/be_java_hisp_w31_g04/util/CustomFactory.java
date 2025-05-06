@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.UserWithFollowersDto;
 import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import org.springframework.core.io.ClassPathResource;
@@ -29,11 +30,26 @@ public class CustomFactory {
 
     private static final String USER_FOLLOWED_RESPONSE_PATH = "jsons/user_followed_response.json";
 
+    private static final String USER_FOLLOWERS_RESPONSE_PATH =  "jsons/user_followers_response.json";
+
     public static Optional<User> getOptionalUser() {
         List<Integer> following = new ArrayList<>(List.of(3, 4));
         List<Integer> followedBy = new ArrayList<>(List.of(1, 10));
 
         return Optional.of(new User(2, "Eve", following, followedBy));
+    }
+
+    public static User getUser() {
+        List<Integer> following = new ArrayList<>(List.of(3, 4));
+        List<Integer> followedBy = new ArrayList<>(List.of(1, 10));
+
+        return new User(2, "Eve", following, followedBy);
+    }
+
+    public static User getUserOne() {
+        List<Integer> following = new ArrayList<>(List.of(2, 3));
+        List<Integer> followedBy = new ArrayList<>(List.of(10));
+        return new User(1, "Juan", following, followedBy);
     }
 
     public static Optional<User> getUserThree() {
@@ -48,6 +64,14 @@ public class CustomFactory {
         return Optional.of(new User(4, "Charlie", following, followedBy));
     }
 
+    public static User getUserTen() {
+        List<Integer> following = new ArrayList<>(List.of(11, 1, 2, 3, 4));
+        List<Integer> followedBy = new ArrayList<>(List.of(8, 9));
+        return new User(10, "Alice", following, followedBy);
+    }
+
+    public static UserDto getUserDtoOne() { return new UserDto(1, "Juan"); }
+
     public static UserDto getUserDtoThree() {
         return new UserDto(3, "David");
     }
@@ -56,9 +80,16 @@ public class CustomFactory {
         return new UserDto(4, "Charlie");
     }
 
+    public static UserDto getUserDtoTen() { return new UserDto(10, "Alice"); }
+
     public static UserDto getUserDto() {
         List<UserDto> users = new ArrayList<>(List.of(getUserDtoThree(), getUserDtoFour()));
         return new UserDto(2, "Eve", users);
+    }
+
+    public static UserWithFollowersDto getUserWithFollowersDto() {
+        List<UserDto> users = new ArrayList<>(List.of(getUserDtoOne(), getUserDtoTen()));
+        return new UserWithFollowersDto(2, "Eve", users);
     }
 
     public static User getUserEmpty() {
@@ -110,6 +141,10 @@ public class CustomFactory {
 
     public static UserDto getUserFollowedResponse() throws IOException{
         return generateFromJson(readJsonFromResource(USER_FOLLOWED_RESPONSE_PATH),UserDto.class);
+    }
+
+    public static UserWithFollowersDto getUserFollowersResponse() throws IOException{
+        return generateFromJson(readJsonFromResource(USER_FOLLOWERS_RESPONSE_PATH),UserWithFollowersDto.class);
     }
 
     public static String getUserToCreatePayload() throws JsonProcessingException {
