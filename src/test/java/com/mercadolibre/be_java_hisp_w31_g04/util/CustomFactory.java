@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.FollowersCountDto;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.UserDto;
-import com.mercadolibre.be_java_hisp_w31_g04.dto.UserToCreateDto;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.mercadolibre.be_java_hisp_w31_g04.dto.*;
+import com.mercadolibre.be_java_hisp_w31_g04.model.Post;
 import com.mercadolibre.be_java_hisp_w31_g04.model.User;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
@@ -15,19 +15,25 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class CustomFactory {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     private static final ObjectWriter writer = mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false).writer();
 
     private static final String USER_CREATE_RESPONSE_PATH = "jsons/user_created_response.json";
 
     private static final String USER_FOLLOWED_RESPONSE_PATH = "jsons/user_followed_response.json";
+
+    private static final String POSTS_FOLLOWED_LIST_RESPONSE_PATH = "jsons/post_followed_list_response.json";
 
     public static Optional<User> getUserOne() {
         List<Integer> following = new ArrayList<>(List.of(3, 4));
@@ -126,6 +132,10 @@ public class CustomFactory {
 
     public static UserDto getUserFollowedResponse() throws IOException{
         return generateFromJson(readJsonFromResource(USER_FOLLOWED_RESPONSE_PATH),UserDto.class);
+    }
+
+    public static FollowedPostsResponseDto getPostFollowedFromTwoWeeksResponse() throws IOException {
+        return generateFromJson(readJsonFromResource(POSTS_FOLLOWED_LIST_RESPONSE_PATH), FollowedPostsResponseDto.class);
     }
 
     public static String getUserToCreatePayload() throws JsonProcessingException {
