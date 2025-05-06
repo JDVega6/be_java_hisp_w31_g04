@@ -16,71 +16,92 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserRepositoryImplTest {
     IUserRepository userRepository;
-    
+
     @BeforeEach
     void setUp() throws IOException {
-        userRepository=new UserRepositoryImpl();
+        userRepository = new UserRepositoryImpl();
     }
 
     @Test
     void saveUser() {
+        // Arrange
+        User user = CustomFactory.getUserEmpty();
+        Integer expected = 1;
+
+        // Act
+        userRepository.saveUser(user);
+
+        // Assert
+        assertEquals(expected, user.getId());
+        userRepository.deleteUserById(1);
     }
 
     @Test
     void getById() {
         // Arrange
-        Optional<User> userExpected= CustomFactory.getOptionalUser();
+        Optional<User> userExpected = CustomFactory.getOptionalUser();
         Integer id = 2;
 
         // Act
-        Optional<User> userActual= userRepository.getById(id);
+        Optional<User> userActual = userRepository.getById(id);
 
         // Assert
-        assertEquals(userExpected,userActual);
+        assertEquals(userExpected, userActual);
 
     }
 
     @Test
     void getUserId() {
+        // Arrange
+        int expected = 1;
+
+        // Act
+        int id = userRepository.getUserId();
+
+        // Assert
+        assertEquals(expected, id);
     }
 
     @Test
     void orderUsersAsc() {
         // Arrange
-        List <User>users=CustomFactory.getUserList();
-        List <User> usersExpected=CustomFactory.getUserListAsc();
-        String order="name_asc";
-        
+        List<User> users = CustomFactory.getUserList();
+        List<User> usersExpected = CustomFactory.getUserListAsc();
+        String order = "name_asc";
+
         // Act
-        userRepository.orderUsers(users,order);
-        
+        userRepository.orderUsers(users, order);
+
         // Assert
-        assertEquals(usersExpected,users);
+        assertEquals(usersExpected, users);
 
     }
+
     @Test
     void orderUsersDesc() {
         // Arrange
-        List <User>users=CustomFactory.getUserList();
-        List <User> usersExpected=CustomFactory.getUserList();
-        String order="name_desc";
+        List<User> users = CustomFactory.getUserList();
+        List<User> usersExpected = CustomFactory.getUserList();
+        String order = "name_desc";
 
         // Act
-        userRepository.orderUsers(users,order);
+        userRepository.orderUsers(users, order);
 
         // Assert
-        assertEquals(usersExpected,users);
+        assertEquals(usersExpected, users);
 
     }
 
     @Test
     void orderUsersError() {
         // Arrange
-        List <User>users=CustomFactory.getUserList();
-        String order="no valido";
+        List<User> users = CustomFactory.getUserList();
+        String order = "no valido";
 
         // Act and Assert
-        assertThrows(BadRequestException.class,()->{userRepository.orderUsers(users,order);});
+        assertThrows(BadRequestException.class, () -> {
+            userRepository.orderUsers(users, order);
+        });
 
     }
 
