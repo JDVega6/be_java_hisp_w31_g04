@@ -26,6 +26,8 @@ public class CustomFactory {
 
     private static final String USER_CREATE_RESPONSE_PATH = "jsons/user_created_response.json";
 
+    private static final String USER_FOLLOWED_RESPONSE_PATH = "jsons/user_followed_response.json";
+
 
 
     public static Optional<User> getOptionalUser() {
@@ -98,6 +100,11 @@ public class CustomFactory {
     public static UserDto getUserCreatedResponse() throws IOException{
         return generateFromJson(readJsonFromResource(USER_CREATE_RESPONSE_PATH),UserDto.class);
     }
+
+    public static UserDto getUserFollowedResponse() throws IOException{
+        return generateFromJson(readJsonFromResource(USER_FOLLOWED_RESPONSE_PATH),UserDto.class);
+    }
+
     public static String getUserToCreatePayload() throws JsonProcessingException {
         return generateFromDto(getUserToCreate());
     }
