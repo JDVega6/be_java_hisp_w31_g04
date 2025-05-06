@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public interface IProductRepository {
     boolean existsProduct(Integer id);
     void savePost(Post postProduct);
-    void saveProduct(Product product);
+    boolean saveProduct(Product product);
     int countPromoPostByUserId(Integer userId);
     List<Post> getPromoPostByUser(Integer userId);
     void deletePostByUserId(Integer userId);
