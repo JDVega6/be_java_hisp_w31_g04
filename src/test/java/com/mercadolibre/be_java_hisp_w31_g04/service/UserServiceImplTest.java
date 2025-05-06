@@ -31,9 +31,9 @@ class UserServiceImplTest {
     @Test
     void createUser() {
         // Arrange
-        User userEmpty=CustomFactory.getUserEmpty();
-        UserDto expected= CustomFactory.getUserDtoThree();
-        UserToCreateDto payload= CustomFactory.getUserToCreate();
+        User userEmpty = CustomFactory.getUserEmpty();
+        UserDto expected = CustomFactory.getUserDtoThree();
+        UserToCreateDto payload = CustomFactory.getUserToCreate();
 
         // Act
         doAnswer(invocation -> {
@@ -41,11 +41,11 @@ class UserServiceImplTest {
             userArg.setId(3);
             return null;
         }).when(userRepository).saveUser(userEmpty);
-        UserDto response=userService.createUser(payload);
+        UserDto response = userService.createUser(payload);
 
         // Assert
         verify(userRepository).saveUser(any(User.class));
-        assertEquals(expected.getUserId(),response.getUserId());
+        assertEquals(expected.getUserId(), response.getUserId());
 
     }
 
@@ -72,28 +72,28 @@ class UserServiceImplTest {
                 return CustomFactory.getUserThree();
             } else if (argument.equals(4)) {
                 return CustomFactory.getUserFour();
-            }else{
+            } else {
                 return new User();
             }
         });
-        UserDto response=userService.getUserFollowed(id, order);
+        UserDto response = userService.getUserFollowed(id, order);
 
         // Assert
-        verify(userRepository,atLeast(3)).getById(anyInt());
-        verify(userRepository,atLeast(1)).orderUsers(users,order);
-        assertEquals(expected,response);
+        verify(userRepository, atLeast(3)).getById(anyInt());
+        verify(userRepository, atLeast(1)).orderUsers(users, order);
+        assertEquals(expected, response);
     }
 
     @Test
     void getUserFollowedError() {
         // Arrange
-        Optional<User> userEmpty =Optional.empty() ;
+        Optional<User> userEmpty = Optional.empty();
         Integer id = 2;
         String order = "";
         when(userRepository.getById(id)).thenReturn(userEmpty);
 
         // Act and Assert
-        assertThrows(UserNotFoundException.class,()->userService.getUserFollowed(id, order));
+        assertThrows(UserNotFoundException.class, () -> userService.getUserFollowed(id, order));
     }
 
     @Test

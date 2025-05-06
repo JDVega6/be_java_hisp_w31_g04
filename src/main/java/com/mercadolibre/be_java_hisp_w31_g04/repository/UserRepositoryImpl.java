@@ -14,10 +14,10 @@ import java.util.*;
 
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
-    private List<User> listOfUsers= new ArrayList<>();
+    private List<User> listOfUsers = new ArrayList<>();
     private int userId;
 
-    public UserRepositoryImpl() throws IOException{
+    public UserRepositoryImpl() throws IOException {
         userId = 0;
         loadDataBase();
     }
@@ -25,10 +25,11 @@ public class UserRepositoryImpl implements IUserRepository {
     private void loadDataBase() throws IOException {
         File file;
         ObjectMapper objectMapper = new ObjectMapper();
-        List<User> users ;
+        List<User> users;
 
-        file= ResourceUtils.getFile("classpath:users.json");
-        users= objectMapper.readValue(file,new TypeReference<List<User>>(){});
+        file = ResourceUtils.getFile("classpath:users.json");
+        users = objectMapper.readValue(file, new TypeReference<List<User>>() {
+        });
 
         listOfUsers = users;
     }
@@ -47,7 +48,7 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public int getUserId() {
-        userId ++;
+        userId++;
         return userId;
     }
 
@@ -62,14 +63,13 @@ public class UserRepositoryImpl implements IUserRepository {
                         return obj1.getName().compareTo(obj2.getName());
                     }
                 });
-            }
-            else if (order.equals("name_desc")) {
+            } else if (order.equals("name_desc")) {
                 user.sort(new Comparator<User>() {
                     public int compare(User obj2, User obj1) {
                         return obj1.getName().compareTo(obj2.getName());
                     }
                 });
-            }else{
+            } else {
                 throw new BadRequestException("Parámetro 'order' inválido. Usa 'name_asc' o 'name_desc'.");
             }
         }
