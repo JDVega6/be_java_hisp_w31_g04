@@ -46,7 +46,50 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserFollowed() {
+    void getUserFollowed() throws Exception {
+        // Arrange
+        UserDto expected= CustomFactory.getUserFollowedResponse();
+        System.out.println(expected.getFollowed());
+
+        // Act and Assert
+        mockMvc.perform(get("/users/{userId}/followed/list",2))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.followed[0].user_id").value(expected.getFollowed().getFirst().getUserId()))
+                .andExpect(jsonPath("$.followed[0].user_name").value(expected.getFollowed().getFirst().getUserName()))
+                .andExpect(jsonPath("$.followed[1].user_id").value(expected.getFollowed().get(1).getUserId()))
+                .andExpect(jsonPath("$.followed[1].user_name").value(expected.getFollowed().get(1).getUserName()));
+
+    }
+    @Test
+    void getUserFollowedNotFound() throws Exception {
+        // Arrange
+        int id=100;
+        String expected="No se encontró ningún usuario con ese ID";
+
+        // Act and Assert
+        mockMvc.perform(get("/users/{userId}/followed/list",id))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
+
+    }
+
+    @Test
+    void getUserFollowedBadRequest() throws Exception {
+        // Arrange
+        int id=1;
+        String expected="Parámetro 'order' inválido. Usa 'name_asc' o 'name_desc'.";
+
+        // Act and Assert
+        mockMvc.perform(get("/users/{userId}/followed/list",id)
+                        .param("order","invalido"))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(expected));
 
     }
 
